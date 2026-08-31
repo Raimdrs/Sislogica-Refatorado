@@ -1,20 +1,23 @@
 #!/bin/sh
 # ----------------------------------------------------------------------------
-# Maven Start Up Batch script
+# Maven Start Up Batch script for Unix
 # ----------------------------------------------------------------------------
 
-export MAVEN_PROJECTBASEDIR=${MAVEN_BASEDIR:-"$PWD"}
+MAVEN_PROJECTBASEDIR="${MAVEN_BASEDIR:-"$PWD"}"
 
-MVN_CMD="mvn"
-if command -v "$MVN_CMD" >/dev/null 2>&1; then
-    exec "$MVN_CMD" "$@"
+if command -v mvn >/dev/null 2>&1; then
+    exec mvn "$@"
 fi
 
-# Fallback: download maven-wrapper.jar if needed
-WRAPPER_JAR=".mvn/wrapper/maven-wrapper.jar"
+WRAPPER_DIR="$MAVEN_PROJECTBASEDIR/.mvn/wrapper"
+WRAPPER_JAR="$WRAPPER_DIR/maven-wrapper.jar"
+
+if [ ! -d "$WRAPPER_DIR" ]; then
+    mkdir -p "$WRAPPER_DIR"
+fi
+
 if [ ! -f "$WRAPPER_JAR" ]; then
-    mkdir -p .mvn/wrapper
     curl -sLo "$WRAPPER_JAR" https://repo.maven.apache.org/maven2/org/apache/maven/wrapper/maven-wrapper/3.2.0/maven-wrapper-3.2.0.jar || wget -qO "$WRAPPER_JAR" https://repo.maven.apache.org/maven2/org/apache/maven/wrapper/maven-wrapper/3.2.0/maven-wrapper-3.2.0.jar
 fi
 
-exec java -jar "$WRAPPER_JAR" "$@"
+exec java -classpath "$WRAPPER_JAR" "-Dmaven.multiModuleProjectDirectory=$MAVEN_PROJECTBASEDIR" org.apache.maven.wrapper.MavenWrapperMain "$@"
