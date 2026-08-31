@@ -1,0 +1,17 @@
+[tasks.build]
+description = "Compila o serviço principal Java/Quarkus e o microsserviço Go"
+run = """
+cd api && ./mvnw compile -B
+cd ../services/parser && go build -v ./...
+"""
+
+[tasks.test]
+description = "Executa os testes unitários e de integração de todos os serviços"
+run = """
+cd api && ./mvnw test -B
+cd ../services/parser && go test -v ./...
+"""
+
+[tasks.dev-db]
+description = "Inicia o banco de dados PostgreSQL via Docker Compose"
+run = "docker compose up -d postgres"

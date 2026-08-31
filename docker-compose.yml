@@ -1,0 +1,22 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: sislogica-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: sislogica_db
+      POSTGRES_USER: sislogica_user
+      POSTGRES_PASSWORD: sislogica_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sislogica_user -d sislogica_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+    driver: local

@@ -1,0 +1,50 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  java-quarkus:
+    name: Build & Test (Java / Quarkus)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Make mvnw executable
+        run: chmod +x api/mvnw
+
+      - name: Compile and Test Quarkus API
+        working-directory: api
+        run: ./mvnw test -B
+
+  go-parser:
+    name: Build & Test (Go / Parser Service)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+          cache-dependency-path: services/parser/go.sum
+
+      - name: Run Go Unit Tests
+        working-directory: services/parser
+        run: go test -v ./...
+
+      - name: Build Go Parser Service
+        working-directory: services/parser
+        run: go build -v ./...

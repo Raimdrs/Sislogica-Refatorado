@@ -5,17 +5,7 @@
 
 ---
 
-## 1. Equipe e Papéis
-
-| Nome | Matrícula | Papel / Responsabilidade |
-|---|---|---|
-| Samuel Ótton Nogueira Maia | 20210055968 | Desenvolvedor Backend / Arquitetura |
-| Raí de Medeiros Cunha | 20260072994 | Desenvolvedor Backend / DevOps |
-| Moab Fred dos Santos Varela | 20260072967 | Desenvolvedor Backend / QA  |
-
----
-
-## 2. Visão do Produto
+## 1. Visão do Produto
 
 ```text
 Para estudantes de computação, filosofia e candidatos a concursos que precisam dominar lógica formal
@@ -30,7 +20,7 @@ Nosso produto oferece validação algorítmica instantânea de estruturas propos
 
 ---
 
-## 3. Definição do MVP (Mínimo Produto Viável)
+## 2. Definição do MVP (Mínimo Produto Viável)
 
 O MVP foca em disponibilizar o núcleo algorítmico e as regras de negócio de lógica proposicional via API REST robusta e documentada.
 
@@ -41,6 +31,16 @@ O MVP foca em disponibilizar o núcleo algorítmico e as regras de negócio de l
 | Validador de equivalências lógicas básicas e operadores ($\land, \lor, \neg, \rightarrow$) | Relatórios gerenciais complexos |
 | Persistência de dados relacional e migrações estruturadas (PostgreSQL + Flyway) | Autenticação e Perfis: login, sessões e tokens JWT/OAuth2 (fora do MVP inicial) |
 | Módulo de exercícios práticos com correção automática | Fórum de dúvidas integrado entre alunos |
+
+---
+
+## 3. Link do Backlog e Histórias de Usuário
+
+- **Quadro no GitHub Projects:** [Quadro de Tarefas do Sílógica](https://github.com/users/Raimdrs/projects)
+- **Documento de Backlog detalhado:** [`docs/backlog.md`](backlog.md)
+- **Especificações de Issues:** [`docs/issues/`](issues/)
+
+O backlog inicial contém 8 histórias priorizadas (P1, P2 e P3), com estimativas em story points e critérios de aceite definidos.
 
 ---
 
@@ -80,13 +80,18 @@ A linguagem Go possui excelente desempenho e concorrência nativa para tarefas i
 
 ---
 
-## 7. Backlog Inicial e Histórias de Usuário
+## 7. Equipe e Papéis
 
-O detalhamento completo das histórias de usuário, estimativas em story points e critérios de aceite encontram-se em [`docs/backlog.md`](backlog.md) e organizadas por sprint em [`docs/sprints/`](sprints/).
+| Nome | Matrícula | Papel / Responsabilidade |
+|---|---|---|
+| Samuel Ótton Nogueira Maia | 20210055968 | Desenvolvedor Backend / Arquitetura |
+| Raí de Medeiros Cunha | 20260072994 | Desenvolvedor Backend / DevOps |
+| Moab Fred dos Santos Varela | 20260072967 | Desenvolvedor Backend / QA |
 
 ---
 
-## 8. Coorte de Apresentação
+## 8. Coorte e Apresentação
 
 - **Coorte:** Coorte B  
-- **Disciplina:** DIM0547 - Desenvolvimento de Sistemas Web II (2026.2)
+- **Disciplina:** DIM0547 - Desenvolvimento de Sistemas Web II (2026.2)  
+- **Vídeo de Apresentação (Sprint 0):** *(Link do vídeo de ~5 minutos no YouTube / Loom / Drive)*

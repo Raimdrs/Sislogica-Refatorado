@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package parser;
+
+option java_multiple_files = true;
+option java_package = "com.sislogica.parser.grpc";
+option java_outer_classname = "ParserProto";
+option go_package = "github.com/sislogica/services/parser/proto;proto";
+
+service LogicParserService {
+  rpc ParseExpression (ParseRequest) returns (ParseResponse);
+  rpc ValidateEquivalence (EquivalenceRequest) returns (EquivalenceResponse);
+}
+
+message ParseRequest {
+  string expression = 1;
+}
+
+message ParseResponse {
+  bool valid = 1;
+  string error_message = 2;
+  repeated string variables = 3;
+  string ast_json = 4;
+}
+
+message EquivalenceRequest {
+  string expression_a = 1;
+  string expression_b = 2;
+}
+
+message EquivalenceResponse {
+  bool equivalent = 1;
+  string counterexample = 2;
+}
