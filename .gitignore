@@ -1,0 +1,68 @@
+# ==========================================
+# Java & Maven / Quarkus
+# ==========================================
+**/target/
+*.class
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+hs_err_pid*
+replay_pid*
+
+# Maven Wrapper
+!api/.mvn/wrapper/maven-wrapper.jar
+
+# Quarkus
+.quarkus/
+
+# ==========================================
+# Go
+# ==========================================
+# Binaries
+bin/
+services/parser/parser
+services/parser/parser.exe
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, coverage, output
+*.test
+*.out
+cover.out
+
+# ==========================================
+# IDEs & Editores
+# ==========================================
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+.settings/
+.project
+.classpath
+*.sublime-workspace
+*.sublime-project
+
+# ==========================================
+# Sistema Operacional
+# ==========================================
+.DS_Store
+Thumbs.db
+ehthumbs.db
+
+# ==========================================
+# Logs & Variáveis de Ambiente
+# ==========================
+*.log
+.env
+.env.local
+.env.*.local
+
