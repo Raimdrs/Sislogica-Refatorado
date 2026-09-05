@@ -65,34 +65,61 @@ O projeto está organizado como um monorepo modular:
 ### 1. Pré-requisitos
 - **Java 21** (JDK 21+)
 - **Go 1.22+** (para o microsserviço de parser)
-- **Docker & Docker Compose** (para infraestrutura local)
+- **Docker & Docker Compose** (para infraestrutura local do banco PostgreSQL)
 - *(Opcional)* [Mise](https://mise.jdx.dev/) para executar as tasks automatizadas
+
+> **Nota sobre o Maven:** Você **não** precisa instalar o Maven manualmente no sistema! O projeto já inclui o **Maven Wrapper** (`mvnw` no Linux/macOS e `mvnw.cmd` no Windows), que baixa e gerencia a versão exata do Maven necessária automaticamente. Se preferir usar o comando global `mvn`, você também pode instalá-lo (`sudo apt install maven`), mas o wrapper é o padrão recomendado para paridade de ambiente.
 
 ---
 
-### 2. Subir a Infraestrutura (Banco de Dados)
-```bash
-docker compose up -d postgres
-```
+### 2. Gerenciando a Infraestrutura (Banco de Dados PostgreSQL)
+
+O banco de dados PostgreSQL roda isolado via contêiner configurado no `docker-compose.yml`.
+
+* **Subir o banco de dados em segundo plano:**
+  ```bash
+  docker compose up -d postgres
+  ```
+
+* **Verificar o status do contêiner e healthcheck:**
+  ```bash
+  docker compose ps
+  ```
+
+* **Pausar ou encerrar o banco após o uso:**
+  ```bash
+  # Para encerrar e remover o contêiner (os dados persistem no volume postgres_data):
+  docker compose down
+
+  # Ou para apenas pausar o contêiner sem desmontar a rede:
+  docker compose stop
+  ```
 
 ---
 
 ### 3. Rodar os Serviços
 
 #### A. Serviço Principal (Java / Quarkus)
+Navegue até a pasta `api/`. Caso esteja no Linux/macOS e seja a primeira execução, garanta a permissão de execução no wrapper com `chmod +x mvnw`.
+
 ```bash
 cd api
-# No Linux / macOS:
+
+# No Linux / macOS (via Maven Wrapper):
 ./mvnw quarkus:dev
 
-# No Windows:
+# No Windows (via Maven Wrapper):
 ./mvnw.cmd quarkus:dev
+
+# Caso tenha o Maven instalado globalmente:
+mvn quarkus:dev
 ```
-- A API estará disponível em: `http://localhost:8080`
-- Swagger UI / Documentação OpenAPI: `http://localhost:8080/q/swagger-ui/`
-- Healthcheck: `http://localhost:8080/health`
+- **API REST:** `http://localhost:8080`
+- **Swagger UI / OpenAPI interativo:** `http://localhost:8080/q/swagger-ui/`
+- **Healthcheck de liveness/readiness:** `http://localhost:8080/health`
 
 #### B. Microsserviço de Parser (Go)
+Navegue até o diretório do serviço em Go para executá-lo diretamente:
 ```bash
 cd services/parser
 go run main.go
@@ -102,20 +129,27 @@ go run main.go
 
 ### 4. Executar Testes e Builds
 
-#### Via `mise`:
+#### Via `mise` (Automação Monorepo):
+Se tiver o `mise` instalado, execute a partir da raiz:
 ```bash
-mise run build   # Compila ambos os serviços
-mise run test    # Executa os testes de ambos os serviços
+mise run build   # Compila ambos os serviços (Java e Go)
+mise run test    # Executa os testes de integração e unitários de ambos
 ```
 
 #### Manualmente:
-```bash
-# Testes do Quarkus:
-cd api && ./mvnw test
+Você pode testar cada serviço de forma isolada:
 
-# Testes do Go:
-cd services/parser && go test -v ./...
-```
+* **Testes da API Quarkus (Java):**
+  ```bash
+  cd api
+  ./mvnw test
+  ```
+
+* **Testes do Microsserviço de Parser (Go):**
+  ```bash
+  cd services/parser
+  go test -v ./...
+  ```
 
 ---
 
