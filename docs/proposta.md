@@ -94,4 +94,4 @@ A linguagem Go possui excelente desempenho e concorrência nativa para tarefas i
 
 - **Coorte:** Coorte B  
 - **Disciplina:** DIM0547 - Desenvolvimento de Sistemas Web II (2026.2)  
-- **Vídeo de Apresentação (Sprint 0):** *(Link do vídeo de ~5 minutos no YouTube / Loom / Drive)*
+- **Vídeo de Apresentação (Sprint 0):** *https://drive.google.com/file/d/1NDhcFxtrJrSfdpQKHr82sNbHFNqZ2etL/view?usp=sharing*
