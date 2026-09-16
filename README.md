@@ -4,7 +4,7 @@
 
 > Projeto desenvolvido para a disciplina **DIM0547 — Desenvolvimento de Sistemas Web II (2026.2)**  
 > **Coorte:** Coorte B  
-> **Vídeo de Apresentação (Sprint 0):** *(Link do vídeo de 5 minutos)*
+> **Vídeo de Apresentação (Sprint 0):** *https://drive.google.com/file/d/1NDhcFxtrJrSfdpQKHr82sNbHFNqZ2etL/view?usp=sharing*
 
 ---
 
