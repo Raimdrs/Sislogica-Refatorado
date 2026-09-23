@@ -1,28 +1,31 @@
-# [Issue 01] CRUD de Exercícios e Conteúdos
+# [Issue 01] CRUD de Turmas (Classes de Lógica)
 
 ## Contexto
-O sistema precisa fornecer aos administradores a capacidade de cadastrar, listar, atualizar e remover exercícios e proposições de lógica formal no sistema. Este módulo compõe a base de dados para que os estudantes possam praticar.
+Refatoração da entidade `CLASSE` do projeto original Sílógica (Python/Django). O sistema deve fornecer aos professores a capacidade de cadastrar, listar, atualizar e remover turmas/classes no sistema. Esta entidade representa o lado "1" do relacionamento 1:N com Silogismos.
 
 ## Critérios de Aceite
-- [ ] Endpoints REST disponíveis em `/api/v1/exercicios`:
-  - `POST /api/v1/exercicios`: Criação de novo exercício com enunciado, fórmula proposicional, nível de dificuldade e gabarito.
-  - `GET /api/v1/exercicios`: Listagem paginada e com filtros por nível (Fácil, Médio, Difícil).
-  - `GET /api/v1/exercicios/{id}`: Detalhamento de um exercício específico.
-  - `PUT /api/v1/exercicios/{id}`: Atualização de dados de exercício.
-  - `DELETE /api/v1/exercicios/{id}`: Remoção lógica/física de exercício.
-- [ ] Validações de entrada com Hibernate Validator (Bean Validation): campos obrigatórios, tamanho de texto, formato de fórmula.
-- [ ] Tratamento de exceções com retornos padronizados em JSON (RFC 7807 - Problem Details).
+- [ ] Endpoints REST disponíveis em `/api/v1/turmas`:
+  - `POST /api/v1/turmas`: Criação de nova turma com `codigo` (código de acesso único), `professor` e `descricao`. Retorna status `201 Created` e cabeçalho `Location: /api/v1/turmas/{id}`.
+  - `GET /api/v1/turmas`: Listagem com paginação no banco (`?pagina=0&tamanho=10`) e filtro por nome do professor.
+  - `GET /api/v1/turmas/{id}`: Detalhamento de uma turma específica (retorna `404 Not Found` se não existir).
+  - `PUT /api/v1/turmas/{id}`: Atualização de dados da turma (retorna `404 Not Found` se não existir).
+  - `DELETE /api/v1/turmas/{id}`: Remoção de turma (retorna `204 No Content`).
+- [ ] Validações de entrada com Bean Validation (`@NotBlank`, `@Size`): campos obrigatórios e tamanhos máximos.
+- [ ] Tratamento de exceções com retornos padronizados em JSON no padrão Problem Details (RFC 9457 / `application/problem+json`).
+- [ ] Documentação OpenAPI/Swagger gerada em `/q/swagger-ui`.
 
 ## Tasks Técnicas
-- [ ] Criar entidade JPA `Exercicio` mapeando campos: `id`, `titulo`, `enunciado`, `formula`, `dificuldade`, `gabarito`, `criadoEm`.
-- [ ] Criar `ExercicioRepository` utilizando Panache.
-- [ ] Criar DTOs de Request e Response (`ExercicioRequestDTO`, `ExercicioResponseDTO`).
-- [ ] Implementar `ExercicioService` com as regras de negócio.
-- [ ] Criar `ExercicioResource` expondo os endpoints REST com anotações OpenAPI.
+- [x] Criar entidade pura de domínio `Turma.java` em `domain/model/`.
+- [x] Criar porta de repositório `TurmaRepositoryPort.java` em `domain/repository/`.
+- [ ] Criar entidade Panache `TurmaPanacheEntity.java` mapeando a tabela `turmas` (Flyway V1).
+- [ ] Criar adaptador de repositório `TurmaRepositoryAdapter.java` implementando `TurmaRepositoryPort`.
+- [ ] Criar DTOs de Request e Response (`TurmaRequestDTO`, `TurmaResponseDTO`).
+- [ ] Implementar serviço de aplicação `TurmaService.java` com as regras de negócio.
+- [ ] Criar recurso REST `TurmaResource.java` com paginação via Panache e anotações OpenAPI.
 
 ## Testes Exigidos
-- [ ] Testes unitários do `ExercicioService` utilizando Mockito / QuarkusMock.
-- [ ] Testes de integração dos endpoints com `@QuarkusTest` e REST-assured validando status 200, 201, 400 e 404.
+- [ ] Testes unitários do `TurmaService` validando as regras de negócio e validações.
+- [ ] Testes de integração dos endpoints com `@QuarkusTest` e REST-assured validando status 200, 201 com Location, 400 e 404.
 
-## Labels / Estimativa
-`~backend` `~quarkus` `~crud` · Estimativa: 5 pts · Prioridade: **P1** · Sprint: **Sprint 1**
+## Responsável Sugerido
+- **Samuel Ótton Nogueira Maia** (`~backend`, `~quarkus`, `~crud`, `~turmas`) · Estimativa: 5 pts · Prioridade: **P1** · Sprint: **Sprint 1**

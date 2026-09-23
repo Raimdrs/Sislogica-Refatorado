@@ -1,31 +1,32 @@
-# [Issue 02] Módulo de Geração e Resolução de Tabelas-Verdade
+# [Issue 02] CRUD de Silogismos e Rota Aninhada de Turmas
 
 ## Contexto
-O diferencial pedagógico do Sílógica é a capacidade de gerar automaticamente a Tabela-Verdade completa e passo a passo a partir de uma proposição composta informada pelo usuário, exibindo todas as colunas intermediárias das subfórmulas.
+Refatoração da entidade `PREMISSAS` do projeto original Sílógica (Python/Django). O sistema deve fornecer aos estudantes e professores a capacidade de cadastrar, listar, atualizar e remover silogismos lógicos aristotélicos vinculados a uma turma/classe (relacionamento 1:N com chave estrangeira).
 
 ## Critérios de Aceite
-- [ ] Endpoint `POST /api/v1/tabela-verdade/gerar` que recebe:
-  - Uma string com a expressão lógica proposicional (ex: `(P ^ Q) -> (~P v R)`).
-- [ ] Reconhecimento de variáveis proposicionais ($P, Q, R, S$, etc.) e operadores:
-  - Negação: `~`, `not`, `¬`
-  - Conjunção: `^`, `and`, `∧`
-  - Disjunção: `v`, `or`, `∨`
-  - Condicional (Implicação): `->`, `implies`, `→`
-  - Bicondicional (Equivalência): `<->`, `iff`, `↔`
-- [ ] Geração das $2^n$ linhas com combinações booleanas (True/False ou V/F).
-- [ ] Decomposição em subfórmulas com cabeçalhos de colunas intermediárias e resultado final.
-- [ ] Identificação da classificação da fórmula: Tautologia, Contradição ou Contingência.
+- [ ] Endpoints REST disponíveis em `/api/v1/silogismos`:
+  - `POST /api/v1/silogismos`: Cadastro de silogismo com `titulo`, `premissaMaior`, `premissaMenor`, `conclusao`, `modo` e `turmaId`. Retorna status `201 Created` e cabeçalho `Location: /api/v1/silogismos/{id}`.
+  - `GET /api/v1/silogismos`: Listagem paginada no SQL via Panache (`?pagina=0&tamanho=10`) com filtro por modo (ex: `?modo=BARBARA`).
+  - `GET /api/v1/turmas/{turmaId}/silogismos`: **Rota aninhada** listando todos os silogismos de uma determinada turma (comprovando o relacionamento 1:N na API).
+  - `GET /api/v1/silogismos/{id}`: Detalhamento de um silogismo (retorna `404 Not Found` se não existir).
+  - `PUT /api/v1/silogismos/{id}`: Atualização de premissas e conclusão (retorna `404 Not Found` se não existir).
+  - `DELETE /api/v1/silogismos/{id}`: Remoção de silogismo (retorna `204 No Content`).
+- [ ] Validações de entrada com Bean Validation (`@NotBlank`, `@NotNull`): premissas obrigatórias e modo válido.
+- [ ] Paginação real no SQL (`Page.of(pagina, tamanho)` no Panache, sem carregar tudo na memória).
+- [ ] Tratamento de exceções com retornos padronizados em JSON no padrão Problem Details (RFC 9457).
 
 ## Tasks Técnicas
-- [ ] Implementar motor de avaliação de expressões lógicas proposicionais (Shunting-yard ou AST).
-- [ ] Criar gerador combinatório de valorações para $N$ variáveis booleanas.
-- [ ] Criar classe `TabelaVerdadeResultDTO` contendo `variaveis`, `subformulas`, `linhas` (matriz de valores) e `classificacao`.
-- [ ] Implementar `TabelaVerdadeService` e `TabelaVerdadeResource`.
+- [x] Criar entidade pura de domínio `Silogismo.java` em `domain/model/`.
+- [x] Criar porta de repositório `SilogismoRepositoryPort.java` em `domain/repository/`.
+- [ ] Criar entidade Panache `SilogismoPanacheEntity.java` mapeando a tabela `silogismos` (Flyway V2 com FK).
+- [ ] Criar adaptador de repositório `SilogismoRepositoryAdapter.java` implementando `SilogismoRepositoryPort`.
+- [ ] Criar DTOs de Request e Response (`SilogismoRequestDTO`, `SilogismoResponseDTO`).
+- [ ] Implementar serviço de aplicação `SilogismoService.java` com as regras de negócio.
+- [ ] Criar recurso REST `SilogismoResource.java` com paginação SQL no Panache, rota aninhada e anotações OpenAPI.
 
 ## Testes Exigidos
-- [ ] Testes unitários para fórmulas simples (ex: `P ^ Q`, `~P`).
-- [ ] Testes unitários com precedência de operadores e parênteses aninhados.
-- [ ] Teste com classificação automática de Tautologia (ex: `P v ~P`), Contradição (ex: `P ^ ~P`) e Contingência.
+- [ ] Testes unitários do `SilogismoService` com regras de validação.
+- [ ] Testes de integração dos endpoints com `@QuarkusTest` e REST-assured validando status 200, 201 com Location, 400, 404 e rota aninhada.
 
-## Labels / Estimativa
-`~backend` `~logica` `~algoritmo` · Estimativa: 8 pts · Prioridade: **P1** · Sprint: **Sprint 1**
+## Responsável Sugerido
+- **Moab Fred dos Santos Varela** (`~backend`, `~qa`, `~crud`, `~silogismos`) · Estimativa: 5 pts · Prioridade: **P1** · Sprint: **Sprint 1**

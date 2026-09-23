@@ -10,16 +10,16 @@ Convenção de Prioridade:
 
 ## Tabela do Backlog
 
-| Prio | ID | História de Usuário | Critérios de Aceitação | Estimativa | Entrega Prevista |
-|---|---|---|---|---|---|
-| **P1** | US01 | Como estudante, quero **inserir uma proposição lógica para gerar sua tabela-verdade automaticamente**. | • Aceita fórmulas com variáveis ($P, Q, R$) e operadores lógicos ($\land, \lor, \neg, \rightarrow, \leftrightarrow$).<br>• Calcula todas as valorações booleanas ($2^n$).<br>• Retorna matriz estruturada (passo a passo) via endpoint REST. | 8 pts | Sprint 1 |
-| **P1** | US02 | Como estudante, quero **resolver listas de exercícios de lógica para testar meu aprendizado**. | • Lista exercícios filtrados por nível de dificuldade e tópicos.<br>• Endpoint de submissão valida a resposta e retorna feedback imediato (acerto/erro com justificativa). | 5 pts | Sprint 1 |
-| **P1** | US03 | Como administrador, quero **cadastrar, editar e remover exercícios no sistema** para ampliar o conteúdo. | • Endpoints de CRUD completo para exercícios.<br>• Suporte a enunciados, alternativas, fórmulas proposicionais e gabaritos formais.<br>• Validação dos campos obrigatórios. | 5 pts | Sprint 1 |
-| **P1** | US04 | Como estudante, quero **validar equivalências lógicas básicas** entre duas proposições para verificar se são equivalentes. | • Endpoint recebe duas fórmulas e avalia se $(P \iff Q)$ é uma tautologia.<br>• Retorna confirmação de equivalência e contraexemplo quando inválido. | 5 pts | Sprint 1 |
-| **P1** | US05 | Como desenvolvedor, quero **configurar a infraestrutura básica, migrações com Flyway e testes com Testcontainers** para garantir a confiabilidade do banco PostgreSQL. | • Migrações versionadas criadas no Flyway.<br>• Testcontainers configurado para subir PostgreSQL nos testes de integração `@QuarkusTest`.<br>• OpenAPI / Swagger UI disponível. | 5 pts | Sprint 1 |
-| **P3** | US06 | Como sistema, quero **processar o parser de fórmulas complexas em um microsserviço dedicado em Go** para desacoplar a computação pesada. | • Microsserviço em Go recebe a string da fórmula via gRPC.<br>• Valida a sintaxe formal (gramática proposicional) e retorna a árvore sintática estruturada (AST) ao Quarkus.<br>• Tratamento de erros de sintaxe detalhado. | 8 pts | Sprint 2 |
-| **P3** | US07 | Como sistema, quero **utilizar cache nas consultas frequentes de proposições e exercícios** para reduzir o tempo de resposta e consumo de banco. | • Implementação de cache (Caffeine / Redis no Quarkus) para proposições já resolvidas e listagens populares.<br>• Exposição de métricas de acerto/erro de cache (Micrometer / Prometheus). | 5 pts | Sprint 3 |
-| **P2** | US08 | Como estudante, quero **me autenticar na plataforma para salvar meu histórico de progresso**. | • Autenticação via JWT (tokens de acesso).<br>• Persistência do histórico de submissões e taxa de acerto por usuário.<br>• Proteção de rotas administrativas e de perfil. | 8 pts | Bloco Final |
+| Prio | ID | História de Usuário | Critérios de Aceitação | Estimativa | Entrega Prevista | Responsável |
+|---|---|---|---|---|---|---|
+| **P1** | US01 | Como professor, quero **cadastrar, listar e gerenciar turmas/classes de lógica** no sistema. | • CRUD completo de turmas via REST (`201 Location`, `204`, `404`).<br>• Paginação e filtro por professor.<br>• Bean Validation e Problem Details. | 5 pts | Sprint 1 | Samuel Ótton |
+| **P1** | US02 | Como estudante/professor, quero **cadastrar e consultar silogismos aristotélicos vinculados a uma turma**. | • CRUD de silogismos com relacionamento 1:N com Turma.<br>• Rota aninhada `/api/v1/turmas/{id}/silogismos`.<br>• Paginação real no SQL via Panache e filtro por modo. | 5 pts | Sprint 1 | Moab Fred |
+| **P1** | US05 | Como desenvolvedor, quero **estruturar a persistência Flyway, testes com Dev Services e verificação Clean Architecture com ArchUnit**. | • Migrações versionadas Flyway (`V1` e `V2`).<br>• Teste de arquitetura com ArchUnit rodando no CI.<br>• Suíte de testes automatizados passando localmente e no GitHub Actions. | 5 pts | Sprint 1 | Raí de Medeiros |
+| **P1** | US03 | Como estudante, quero **validar a consistência e regras formais de um silogismo**. | • Validador de regras aristotélicas de silogismos (ex: de duas negativas nada se conclui).<br>• Retorna feedback estruturado e identificação de falácias. | 5 pts | Sprint 2 | Equipe |
+| **P1** | US04 | Como estudante, quero **gerar tabelas-verdade e validar equivalências lógicas básicas**. | • Endpoint avalia proposições booleanas ($P \land Q, P \lor Q$).<br>• Retorna matriz de valorações verdade. | 5 pts | Sprint 2 | Equipe |
+| **P3** | US06 | Como sistema, quero **processar o parser formal de fórmulas lógicas em microsserviço dedicado em Go**. | • Microsserviço em Go recebe a expressão via gRPC.<br>• Gera a árvore sintática (AST) com alta performance. | 8 pts | Sprint 2 | Equipe |
+| **P3** | US07 | Como sistema, quero **utilizar cache nas consultas frequentes** para otimizar tempo de resposta. | • Cache de silogismos e turmas com Caffeine / Redis.<br>• Métricas Micrometer / Prometheus. | 5 pts | Sprint 3 | Equipe |
+| **P2** | US08 | Como usuário, quero **autenticação com JWT para salvar meu progresso**. | • Autenticação e controle de acesso via tokens JWT. | 8 pts | Bloco Final | Equipe |
 
 ---
 
