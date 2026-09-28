@@ -1,18 +1,21 @@
-package br.com.sislogica.service;
+package br.com.sislogica.domain.entity;
 
-import br.com.sislogica.domain.entity.SilogismoPanacheEntity;
-import io.quarkus.hibernate.orm.panache.PanacheQuery;
-import io.quarkus.panache.common.Page;
-import jakarta.enterprise.context.ApplicationScoped;
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
-import java.util.List;
+@Entity
+@Table(name = "silogismos")
+public class SilogismoPanacheEntity extends PanacheEntity {
 
-@ApplicationScoped
-public class SilogismoService {
+    public String premissaMaior;
+    public String premissaMenor;
+    public String conclusao;
+    public boolean valido;
 
-    public List<SilogismoPanacheEntity> buscarPorTurmaPaginado(Long turmaId, int pagina, int tamanho) {
-        PanacheQuery<SilogismoPanacheEntity> query = SilogismoPanacheEntity.find("turma.id", turmaId);
-        
-        return query.page(Page.of(pagina, tamanho)).list();
-    }
+    @ManyToOne
+    @JoinColumn(name = "turma_id", nullable = false)
+    public Turma turma;
 }
