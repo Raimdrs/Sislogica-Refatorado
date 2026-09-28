@@ -1,9 +1,8 @@
-package br.com.sislogica.domain.entity;
+package com.sislogica.api.domain; 
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -15,7 +14,6 @@ public class SilogismoPanacheEntity extends PanacheEntity {
     public String conclusao;
     public boolean valido;
 
-    @ManyToOne
-    @JoinColumn(name = "turma_id", nullable = false)
-    public Turma turma;
+    @Column(name = "turma_id", nullable = false)
+    public Long turmaId; 
 }
