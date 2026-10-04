@@ -1,0 +1,180 @@
+name: Gemini AI PR Reviewer
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  review:
+    name: Code Review com Gemini AI
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Analisar PR e publicar revisão com Gemini AI
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          python - << 'EOF'
+          import os
+          import subprocess
+          import json
+          import urllib.request
+          import urllib.error
+
+          api_key = os.environ.get("GEMINI_API_KEY")
+          if not api_key:
+              print("AVISO: GEMINI_API_KEY não configurada nos secrets do repositório. Pulando revisão.")
+              exit(0)
+
+          base_ref = os.environ.get("BASE_REF", "main")
+          pr_number = os.environ.get("PR_NUMBER")
+
+          # Obter diff das alterações do Pull Request
+          try:
+              diff = subprocess.check_output(
+                  ["git", "diff", f"origin/{base_ref}...HEAD"],
+                  stderr=subprocess.STDOUT
+              ).decode("utf-8", errors="ignore")
+          except Exception as e:
+              diff = str(e)
+
+          if not diff.strip():
+              print("Nenhuma alteração detectada para análise.")
+              exit(0)
+
+          # Limita tamanho do diff para evitar payload excessivo
+          if len(diff) > 80000:
+              diff = diff[:80000] + "\n\n...[diff truncado por exceder limite de tamanho]..."
+
+          # 1. Consultar dinamicamente os modelos disponíveis para esta chave de API
+          available_models = []
+          try:
+              req_models = urllib.request.Request(
+                  f"https://generativelanguage.googleapis.com/v1beta/models?key={api_key}",
+                  headers={"x-goog-api-key": api_key}
+              )
+              with urllib.request.urlopen(req_models) as resp:
+                  data = json.loads(resp.read().decode("utf-8"))
+                  for m in data.get("models", []):
+                      if "generateContent" in m.get("supportedGenerationMethods", []):
+                          available_models.append(m["name"])
+              print(f"Modelos com suporte a generateContent disponíveis: {available_models}")
+          except Exception as e:
+              print(f"Aviso: Não foi possível listar modelos via API: {e}")
+
+          # Prioridade na escolha do modelo mais moderno e rápido
+          preferred_order = [
+              "models/gemini-2.5-flash",
+              "models/gemini-2.0-flash",
+              "models/gemini-2.0-flash-exp",
+              "models/gemini-1.5-flash-latest",
+              "models/gemini-1.5-flash",
+              "models/gemini-1.5-pro-latest",
+              "models/gemini-1.5-pro",
+              "models/gemini-pro"
+          ]
+
+          selected_model = None
+          for pref in preferred_order:
+              if pref in available_models:
+                  selected_model = pref
+                  break
+
+          if not selected_model and available_models:
+              selected_model = available_models[0]
+
+          if not selected_model:
+              selected_model = "models/gemini-2.0-flash"
+
+          print(f"Modelo selecionado para o Code Review: {selected_model}")
+
+          prompt = f"""Você é um Senior Software Architect e Code Reviewer especialista em Java 21, Quarkus, Clean Architecture (DDD / Ports & Adapters) e Go.
+          Analise o diff deste Pull Request do projeto 'Sílógica' e faça uma revisão técnica estruturada em Português (pt-BR).
+
+          Diretrizes do projeto Sílógica:
+          1. Clean Architecture: Camadas de 'domain' NUNCA podem depender de frameworks (Quarkus, Hibernate, Jakarta, etc.) ou banco de dados. Entidades Panache e anotações JPA pertencem exclusivamente à camada 'infrastructure'.
+          2. Pacotes base: Devem seguir 'com.sislogica.api.*'.
+          3. Testes: Arquivos de teste devem residir em 'src/test/java', nunca em 'src/main/java'.
+          4. Qualidade de código: Nomes descritivos, tratamento de exceções, ausência de code smells e boas práticas.
+
+          Diff das alterações:
+          ```diff
+          {diff}
+          ```
+
+          Estruture seu comentário no seguinte formato Markdown:
+          ## 🤖 Análise do Gemini AI Code Review ({selected_model})
+
+          ### 📌 Resumo das Alterações
+          (Explique em 2 ou 3 tópicos concisos o que este PR implementa ou modifica)
+
+          ### ✅ Pontos Positivos
+          (Destaque boas práticas, arquitetura bem empregada e testes)
+
+          ### ⚠️ Pontos de Atenção & Problemas Encontrados
+          (Se houver violações de arquitetura, pacotes divergentes, imports faltantes, bugs potenciais ou code smells, aponte detalhadamente aqui. Se não houver nenhum, indique que o código está limpo)
+
+          ### 💡 Sugestões de Melhoria
+          (Oportunidades de otimização, refatoração ou testes adicionais)
+
+          ---
+          ### 🏁 Veredito: [Aprovado ✅ | Requer Ajustes ⚠️ | Reprovado ❌]
+          """
+
+          # Endpoint generateContent com o modelo selecionado
+          model_endpoint = selected_model if selected_model.startswith("models/") else f"models/{selected_model}"
+          url = f"https://generativelanguage.googleapis.com/v1beta/{model_endpoint}:generateContent?key={api_key}"
+
+          payload = {
+              "contents": [{
+                  "parts": [{"text": prompt}]
+              }],
+              "generationConfig": {
+                  "temperature": 0.2
+              }
+          }
+
+          req = urllib.request.Request(
+              url,
+              data=json.dumps(payload).encode("utf-8"),
+              headers={
+                  "Content-Type": "application/json",
+                  "x-goog-api-key": api_key
+              }
+          )
+
+          try:
+              with urllib.request.urlopen(req) as response:
+                  res_data = json.loads(response.read().decode("utf-8"))
+                  review_text = res_data["candidates"][0]["content"]["parts"][0]["text"]
+          except urllib.error.HTTPError as e:
+              err_msg = e.read().decode("utf-8")
+              review_text = f"❌ **Erro na API do Gemini ({e.code}):** {err_msg}\n\nModelos detectados na chave: `{available_models}`"
+          except Exception as e:
+              review_text = f"❌ **Erro ao consultar a API do Gemini:** {e}"
+
+          # Salva o parecer em arquivo e publica via GitHub CLI
+          with open("review.md", "w", encoding="utf-8") as f:
+              f.write(review_text)
+
+          subprocess.run(["gh", "pr", "comment", str(pr_number), "--body-file", "review.md"], check=True)
+          print("Comentário do Gemini postado no PR com sucesso!")
+          EOF
