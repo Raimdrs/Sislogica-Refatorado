@@ -1,7 +1,7 @@
-package br.com.sislogica.resource;
+package com.sislogica.api.controller;
 
-import br.com.sislogica.domain.entity.SilogismoPanacheEntity;
-import br.com.sislogica.service.SilogismoService;
+import com.sislogica.api.infrastructure.entity.SilogismoPanacheEntity;
+import com.sislogica.api.service.SilogismoService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
