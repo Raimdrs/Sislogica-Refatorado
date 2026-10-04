@@ -61,8 +61,50 @@ jobs:
               exit(0)
 
           # Limita tamanho do diff para evitar payload excessivo
-          if len(diff) > 100000:
-              diff = diff[:100000] + "\n\n...[diff truncado por exceder limite de tamanho]..."
+          if len(diff) > 80000:
+              diff = diff[:80000] + "\n\n...[diff truncado por exceder limite de tamanho]..."
+
+          # 1. Consultar dinamicamente os modelos disponíveis para esta chave de API
+          available_models = []
+          try:
+              req_models = urllib.request.Request(
+                  f"https://generativelanguage.googleapis.com/v1beta/models?key={api_key}",
+                  headers={"x-goog-api-key": api_key}
+              )
+              with urllib.request.urlopen(req_models) as resp:
+                  data = json.loads(resp.read().decode("utf-8"))
+                  for m in data.get("models", []):
+                      if "generateContent" in m.get("supportedGenerationMethods", []):
+                          available_models.append(m["name"])
+              print(f"Modelos com suporte a generateContent disponíveis: {available_models}")
+          except Exception as e:
+              print(f"Aviso: Não foi possível listar modelos via API: {e}")
+
+          # Prioridade na escolha do modelo mais moderno e rápido
+          preferred_order = [
+              "models/gemini-2.5-flash",
+              "models/gemini-2.0-flash",
+              "models/gemini-2.0-flash-exp",
+              "models/gemini-1.5-flash-latest",
+              "models/gemini-1.5-flash",
+              "models/gemini-1.5-pro-latest",
+              "models/gemini-1.5-pro",
+              "models/gemini-pro"
+          ]
+
+          selected_model = None
+          for pref in preferred_order:
+              if pref in available_models:
+                  selected_model = pref
+                  break
+
+          if not selected_model and available_models:
+              selected_model = available_models[0]
+
+          if not selected_model:
+              selected_model = "models/gemini-2.0-flash"
+
+          print(f"Modelo selecionado para o Code Review: {selected_model}")
 
           prompt = f"""Você é um Senior Software Architect e Code Reviewer especialista em Java 21, Quarkus, Clean Architecture (DDD / Ports & Adapters) e Go.
           Analise o diff deste Pull Request do projeto 'Sílógica' e faça uma revisão técnica estruturada em Português (pt-BR).
@@ -79,7 +121,7 @@ jobs:
           ```
 
           Estruture seu comentário no seguinte formato Markdown:
-          ## 🤖 Análise do Gemini AI Code Review
+          ## 🤖 Análise do Gemini AI Code Review ({selected_model})
 
           ### 📌 Resumo das Alterações
           (Explique em 2 ou 3 tópicos concisos o que este PR implementa ou modifica)
@@ -97,7 +139,10 @@ jobs:
           ### 🏁 Veredito: [Aprovado ✅ | Requer Ajustes ⚠️ | Reprovado ❌]
           """
 
-          url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+          # Endpoint generateContent com o modelo selecionado
+          model_endpoint = selected_model if selected_model.startswith("models/") else f"models/{selected_model}"
+          url = f"https://generativelanguage.googleapis.com/v1beta/{model_endpoint}:generateContent?key={api_key}"
+
           payload = {
               "contents": [{
                   "parts": [{"text": prompt}]
@@ -110,7 +155,10 @@ jobs:
           req = urllib.request.Request(
               url,
               data=json.dumps(payload).encode("utf-8"),
-              headers={"Content-Type": "application/json"}
+              headers={
+                  "Content-Type": "application/json",
+                  "x-goog-api-key": api_key
+              }
           )
 
           try:
@@ -119,7 +167,7 @@ jobs:
                   review_text = res_data["candidates"][0]["content"]["parts"][0]["text"]
           except urllib.error.HTTPError as e:
               err_msg = e.read().decode("utf-8")
-              review_text = f"❌ **Erro na API do Gemini ({e.code}):** {err_msg}"
+              review_text = f"❌ **Erro na API do Gemini ({e.code}):** {err_msg}\n\nModelos detectados na chave: `{available_models}`"
           except Exception as e:
               review_text = f"❌ **Erro ao consultar a API do Gemini:** {e}"
 
