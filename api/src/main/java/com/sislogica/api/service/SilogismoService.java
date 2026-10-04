@@ -1,6 +1,6 @@
 package com.sislogica.api.service;
 
-import com.sislogica.api.domain.SilogismoPanacheEntity;
+import com.sislogica.api.infrastructure.entity.SilogismoPanacheEntity;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
 import jakarta.enterprise.context.ApplicationScoped;
