@@ -1,4 +1,4 @@
-package br.com.sislogica.resource;
+package com.sislogica.api.controller;
 
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
@@ -11,7 +11,6 @@ public class SilogismoResourceTest {
 
     @Test
     public void testListarSilogismosPorTurmaPaginadoEndpoint() {
-        // Define o ID de uma turma que exista no seu banco de dados de teste
         Long turmaIdTeste = 1L;
 
         given()
@@ -22,6 +21,6 @@ public class SilogismoResourceTest {
             .get("/api/v1/turmas/{turmaId}/silogismos")
         .then()
             .statusCode(200)
-            .body(notNullValue()); // Verifica se o corpo da resposta não é nulo (retorna um array JSON)
+            .body(notNullValue());
     }
 }
