@@ -18,7 +18,7 @@ public class SilogismoRepositoryAdapter implements SilogismoRepositoryPort {
         if (silogismo.getId() != null) {
             entity = SilogismoPanacheEntity.findById(silogismo.getId());
             if (entity == null) {
-                entity = new SilogismoPanacheEntity();
+                throw new IllegalArgumentException("Silogismo com ID " + silogismo.getId() + " não encontrado para atualização.");
             }
         } else {
             entity = new SilogismoPanacheEntity();

@@ -192,20 +192,10 @@ class SilogismoResourceUnitTest {
     @Test
     @DisplayName("GET /api/v1/turmas/{turmaId}/silogismos: Deve retornar status 200 e lista de silogismos da turma")
     void deveRetornarStatus200EListaDeSilogismosDaTurma() {
-        SilogismoPanacheEntity entity = new SilogismoPanacheEntity();
-        entity.id = 1L;
-        entity.titulo = "Barbara Teste";
-        entity.premissaMaior = "Todo M é P";
-        entity.premissaMenor = "Todo S é M";
-        entity.conclusao = "Todo S é P";
-        entity.modo = "BARBARA";
-        entity.turmaId = 1L;
-        entity.valido = true;
-
         resource.silogismoService = new SilogismoService() {
             @Override
-            public List<SilogismoPanacheEntity> buscarPorTurmaPaginado(Long turmaId, int pagina, int tamanho) {
-                return List.of(entity);
+            public List<SilogismoResponseDTO> buscarPorTurmaPaginado(Long turmaId, int pagina, int tamanho) {
+                return List.of(mockResponseDTO);
             }
         };
 
@@ -213,6 +203,6 @@ class SilogismoResourceUnitTest {
 
         assertEquals(200, response.getStatus());
         assertNotNull(response.getEntity());
-        assertEquals(List.of(entity), response.getEntity());
+        assertEquals(List.of(mockResponseDTO), response.getEntity());
     }
 }

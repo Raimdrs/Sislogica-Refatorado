@@ -2,7 +2,6 @@ package com.sislogica.api.controller;
 
 import com.sislogica.api.dto.SilogismoRequestDTO;
 import com.sislogica.api.dto.SilogismoResponseDTO;
-import com.sislogica.api.infrastructure.entity.SilogismoPanacheEntity;
 import com.sislogica.api.service.SilogismoService;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
@@ -101,7 +100,7 @@ public class SilogismoResource {
             @PathParam("turmaId") Long turmaId,
             @QueryParam("pagina") @DefaultValue("0") int pagina,
             @QueryParam("tamanho") @DefaultValue("10") int tamanho) {
-        List<SilogismoPanacheEntity> silogismos = silogismoService.buscarPorTurmaPaginado(turmaId, pagina, tamanho);
+        List<SilogismoResponseDTO> silogismos = silogismoService.buscarPorTurmaPaginado(turmaId, pagina, tamanho);
         return Response.ok(silogismos).build();
     }
 }

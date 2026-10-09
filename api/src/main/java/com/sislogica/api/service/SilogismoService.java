@@ -4,9 +4,6 @@ import com.sislogica.api.domain.model.Silogismo;
 import com.sislogica.api.domain.repository.SilogismoRepositoryPort;
 import com.sislogica.api.dto.SilogismoRequestDTO;
 import com.sislogica.api.dto.SilogismoResponseDTO;
-import com.sislogica.api.infrastructure.entity.SilogismoPanacheEntity;
-import io.quarkus.hibernate.orm.panache.PanacheQuery;
-import io.quarkus.panache.common.Page;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -81,8 +78,10 @@ public class SilogismoService {
         return silogismoRepository.deletarPorId(id);
     }
 
-    public List<SilogismoPanacheEntity> buscarPorTurmaPaginado(Long turmaId, int pagina, int tamanho) {
-        PanacheQuery<SilogismoPanacheEntity> query = SilogismoPanacheEntity.find("turmaId", turmaId);
-        return query.page(Page.of(pagina, tamanho)).list();
+    public List<SilogismoResponseDTO> buscarPorTurmaPaginado(Long turmaId, int pagina, int tamanho) {
+        return silogismoRepository.listarPorTurma(turmaId, pagina, tamanho)
+                .stream()
+                .map(SilogismoResponseDTO::fromDomain)
+                .toList();
     }
 }

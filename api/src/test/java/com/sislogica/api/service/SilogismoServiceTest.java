@@ -288,4 +288,42 @@ class SilogismoServiceTest {
         assertTrue(service.deletar(1L));
         assertFalse(service.deletar(999L));
     }
+
+    @Test
+    @DisplayName("Deve buscar silogismos por turma paginado via repositório")
+    void deveBuscarSilogismosPorTurmaPaginado() {
+        SilogismoRepositoryPort fakeRepo = new SilogismoRepositoryPort() {
+            @Override
+            public Silogismo salvar(Silogismo s) {
+                return s;
+            }
+
+            @Override
+            public Optional<Silogismo> buscarPorId(Long id) {
+                return Optional.empty();
+            }
+
+            @Override
+            public List<Silogismo> listarPorTurma(Long turmaId, int pagina, int tamanho) {
+                return List.of(domainModel);
+            }
+
+            @Override
+            public List<Silogismo> listar(int pagina, int tamanho, String modo) {
+                return List.of();
+            }
+
+            @Override
+            public boolean deletarPorId(Long id) {
+                return false;
+            }
+        };
+
+        service = new SilogismoService(fakeRepo);
+
+        List<SilogismoResponseDTO> lista = service.buscarPorTurmaPaginado(1L, 0, 10);
+
+        assertEquals(1, lista.size());
+        assertEquals("Barbara Teste", lista.getFirst().titulo);
+    }
 }
