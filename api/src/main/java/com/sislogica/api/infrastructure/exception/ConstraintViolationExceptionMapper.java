@@ -4,7 +4,6 @@ import com.sislogica.api.dto.ProblemDetails;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.ws.rs.core.Context;
-import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 import jakarta.ws.rs.ext.ExceptionMapper;
@@ -16,6 +15,8 @@ import java.util.List;
 
 @Provider
 public class ConstraintViolationExceptionMapper implements ExceptionMapper<ConstraintViolationException> {
+
+    public static final String APPLICATION_PROBLEM_JSON = "application/problem+json";
 
     @Context
     UriInfo uriInfo;
@@ -43,7 +44,7 @@ public class ConstraintViolationExceptionMapper implements ExceptionMapper<Const
         );
 
         return Response.status(Response.Status.BAD_REQUEST)
-                .type(MediaType.APPLICATION_JSON)
+                .type(APPLICATION_PROBLEM_JSON)
                 .entity(problem)
                 .build();
     }

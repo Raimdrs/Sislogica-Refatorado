@@ -92,14 +92,11 @@ public class SilogismoResource {
         return Response.status(Response.Status.NOT_FOUND).build();
     }
 
-    @GET
-    @Path("/turmas/{turmaId}/silogismos")
-    @Operation(summary = "Listar silogismos da turma", description = "Rota aninhada comprovando o relacionamento 1:N entre Turma e Silogismos")
-    @APIResponse(responseCode = "200", description = "Lista de silogismos da turma retornada com sucesso")
+    // Rota HTTP hospedada em TurmaResource (GET /api/v1/turmas/{turmaId}/silogismos) para evitar conflito de prefixo no JAX-RS
     public Response listarSilogismosDaTurma(
-            @PathParam("turmaId") Long turmaId,
-            @QueryParam("pagina") @DefaultValue("0") int pagina,
-            @QueryParam("tamanho") @DefaultValue("10") int tamanho) {
+            Long turmaId,
+            int pagina,
+            int tamanho) {
         List<SilogismoResponseDTO> silogismos = silogismoService.buscarPorTurmaPaginado(turmaId, pagina, tamanho);
         return Response.ok(silogismos).build();
     }
