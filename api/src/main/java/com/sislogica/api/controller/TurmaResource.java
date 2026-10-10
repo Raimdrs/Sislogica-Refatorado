@@ -28,6 +28,9 @@ public class TurmaResource {
     @Inject
     public TurmaService turmaService;
 
+    @Inject
+    public com.sislogica.api.service.SilogismoService silogismoService;
+
     @POST
     @Operation(summary = "Criar turma", description = "Cadastra uma nova turma com código de acesso único e professor")
     @APIResponses({
@@ -91,5 +94,17 @@ public class TurmaResource {
             return Response.noContent().build();
         }
         return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
+    @GET
+    @Path("/{turmaId}/silogismos")
+    @Operation(summary = "Listar silogismos da turma", description = "Rota aninhada comprovando o relacionamento 1:N entre Turma e Silogismos")
+    @APIResponse(responseCode = "200", description = "Lista de silogismos da turma retornada com sucesso")
+    public Response listarSilogismosDaTurma(
+            @PathParam("turmaId") @Positive(message = "O ID deve ser um número positivo") Long turmaId,
+            @QueryParam("pagina") @PositiveOrZero(message = "A página deve ser maior ou igual a zero") @DefaultValue("0") int pagina,
+            @QueryParam("tamanho") @Min(value = 1, message = "O tamanho deve ser de no mínimo 1") @DefaultValue("10") int tamanho) {
+        List<com.sislogica.api.dto.SilogismoResponseDTO> silogismos = silogismoService.buscarPorTurmaPaginado(turmaId, pagina, tamanho);
+        return Response.ok(silogismos).build();
     }
 }
