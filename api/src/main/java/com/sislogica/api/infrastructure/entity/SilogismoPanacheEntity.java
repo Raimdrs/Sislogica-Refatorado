@@ -4,6 +4,8 @@ import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.CreationTimestamp;
+
 import java.time.Instant;
 
 @Entity
@@ -31,7 +33,7 @@ public class SilogismoPanacheEntity extends PanacheEntity {
     @Column(name = "valido", nullable = false)
     public boolean valido = true;
 
-    @Column(name = "criado_em")
-    public Instant criadoEm = Instant.now();
+    @CreationTimestamp
+    @Column(name = "criado_em", updatable = false)
+    public Instant criadoEm;
 }
-

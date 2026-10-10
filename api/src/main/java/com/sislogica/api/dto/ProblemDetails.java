@@ -5,25 +5,44 @@ import java.time.Instant;
 import java.util.List;
 
 /**
- * Representação padronizada de erros HTTP conforme a RFC 9457 (Problem Details for HTTP APIs).
+ * Representação padronizada de respostas de erro conforme a RFC 9457 (Problem Details for HTTP APIs).
  */
-public record ProblemDetails(
-        URI type,
-        String title,
-        int status,
-        String detail,
-        URI instance,
-        List<Violation> violations,
-        Instant timestamp
-) {
+public class ProblemDetails {
+
+    public URI type;
+    public String title;
+    public int status;
+    public String detail;
+    public URI instance;
+    public List<Violation> violations;
+    public Instant timestamp = Instant.now();
+
+    public ProblemDetails() {
+    }
 
     public ProblemDetails(URI type, String title, int status, String detail, URI instance) {
-        this(type != null ? type : URI.create("about:blank"), title, status, detail, instance, null, Instant.now());
+        this.type = type != null ? type : URI.create("about:blank");
+        this.title = title;
+        this.status = status;
+        this.detail = detail;
+        this.instance = instance;
     }
 
     public ProblemDetails(URI type, String title, int status, String detail, URI instance, List<Violation> violations) {
-        this(type != null ? type : URI.create("about:blank"), title, status, detail, instance, violations, Instant.now());
+        this(type, title, status, detail, instance);
+        this.violations = violations;
     }
 
-    public record Violation(String campo, String mensagem) {}
+    public static class Violation {
+        public String campo;
+        public String mensagem;
+
+        public Violation() {
+        }
+
+        public Violation(String campo, String mensagem) {
+            this.campo = campo;
+            this.mensagem = mensagem;
+        }
+    }
 }

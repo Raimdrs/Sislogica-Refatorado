@@ -29,7 +29,7 @@ public class IllegalArgumentExceptionMapper implements ExceptionMapper<IllegalAr
         );
 
         return Response.status(Response.Status.BAD_REQUEST)
-                .header("Content-Type", APPLICATION_PROBLEM_JSON)
+                .type(APPLICATION_PROBLEM_JSON)
                 .entity(problem)
                 .build();
     }
