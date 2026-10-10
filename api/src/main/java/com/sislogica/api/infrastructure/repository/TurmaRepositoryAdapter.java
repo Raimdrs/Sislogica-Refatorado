@@ -27,9 +27,6 @@ public class TurmaRepositoryAdapter implements TurmaRepositoryPort {
         entity.codigo = turma.getCodigo();
         entity.professor = turma.getProfessor();
         entity.descricao = turma.getDescricao();
-        if (turma.getCriadoEm() != null) {
-            entity.criadoEm = turma.getCriadoEm();
-        }
 
         entity.persist();
         return toDomain(entity);

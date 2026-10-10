@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class TurmaResourceUnitTest {
 
@@ -44,8 +45,8 @@ class TurmaResourceUnitTest {
     }
 
     @Test
-    @DisplayName("POST /api/v1/turmas: Deve retornar 400 em caso de código duplicado")
-    void deveRetornar400AoCriarComCodigoDuplicado() {
+    @DisplayName("POST /api/v1/turmas: Deve propagar IllegalArgumentException para o Mapper em código duplicado")
+    void devePropagarExcecaoAoCriarComCodigoDuplicado() {
         resource.turmaService = new TurmaService() {
             @Override
             public TurmaResponseDTO criar(TurmaRequestDTO dto) {
@@ -54,9 +55,7 @@ class TurmaResourceUnitTest {
         };
 
         TurmaRequestDTO request = new TurmaRequestDTO("LOG-01", "Prof. Aristóteles", "Descrição");
-        Response response = resource.criarTurma(request);
-
-        assertEquals(400, response.getStatus());
+        assertThrows(IllegalArgumentException.class, () -> resource.criarTurma(request));
     }
 
     @Test

@@ -27,15 +27,15 @@ public class TurmaService {
 
     @Transactional
     public TurmaResponseDTO criar(TurmaRequestDTO dto) {
-        if (turmaRepository.buscarPorCodigo(dto.codigo).isPresent()) {
-            throw new IllegalArgumentException("Já existe uma turma cadastrada com o código informado: " + dto.codigo);
+        if (turmaRepository.buscarPorCodigo(dto.codigo()).isPresent()) {
+            throw new IllegalArgumentException("Já existe uma turma cadastrada com o código informado: " + dto.codigo());
         }
 
         Turma domain = new Turma(
                 null,
-                dto.codigo,
-                dto.professor,
-                dto.descricao,
+                dto.codigo(),
+                dto.professor(),
+                dto.descricao(),
                 Instant.now()
         );
 
@@ -68,16 +68,16 @@ public class TurmaService {
         }
 
         Turma domain = existente.get();
-        if (!domain.getCodigo().equals(dto.codigo)) {
-            Optional<Turma> comMesmoCodigo = turmaRepository.buscarPorCodigo(dto.codigo);
+        if (!domain.getCodigo().equals(dto.codigo())) {
+            Optional<Turma> comMesmoCodigo = turmaRepository.buscarPorCodigo(dto.codigo());
             if (comMesmoCodigo.isPresent()) {
-                throw new IllegalArgumentException("Já existe outra turma com o código informado: " + dto.codigo);
+                throw new IllegalArgumentException("Já existe outra turma com o código informado: " + dto.codigo());
             }
         }
 
-        domain.setCodigo(dto.codigo);
-        domain.setProfessor(dto.professor);
-        domain.setDescricao(dto.descricao);
+        domain.setCodigo(dto.codigo());
+        domain.setProfessor(dto.professor());
+        domain.setDescricao(dto.descricao());
 
         Turma atualizada = turmaRepository.salvar(domain);
         return Optional.of(TurmaResponseDTO.fromDomain(atualizada));

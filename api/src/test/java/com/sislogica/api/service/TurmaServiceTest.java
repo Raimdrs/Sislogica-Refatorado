@@ -61,8 +61,8 @@ class TurmaServiceTest {
         TurmaResponseDTO res = service.criar(dto);
 
         assertNotNull(res);
-        assertEquals(10L, res.id);
-        assertEquals("LOG-01", res.codigo);
+        assertEquals(10L, res.id());
+        assertEquals("LOG-01", res.codigo());
     }
 
     @Test
@@ -135,7 +135,7 @@ class TurmaServiceTest {
 
         Optional<TurmaResponseDTO> res = service.buscarPorId(1L);
         assertTrue(res.isPresent());
-        assertEquals("LOG-01", res.get().codigo);
+        assertEquals("LOG-01", res.get().codigo());
     }
 
     @Test
@@ -172,7 +172,7 @@ class TurmaServiceTest {
 
         List<TurmaResponseDTO> lista = service.listarPaginado(0, 10, null);
         assertEquals(1, lista.size());
-        assertEquals("LOG-01", lista.getFirst().codigo);
+        assertEquals("LOG-01", lista.getFirst().codigo());
     }
 
     @Test
@@ -211,8 +211,8 @@ class TurmaServiceTest {
         Optional<TurmaResponseDTO> res = service.atualizar(1L, dto);
 
         assertTrue(res.isPresent());
-        assertEquals("LOG-02", res.get().codigo);
-        assertEquals("Prof. Novo", res.get().professor);
+        assertEquals("LOG-02", res.get().codigo());
+        assertEquals("Prof. Novo", res.get().professor());
     }
 
     @Test
