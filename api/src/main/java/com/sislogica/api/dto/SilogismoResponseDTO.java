@@ -9,9 +9,9 @@ public class SilogismoResponseDTO {
 
     public Long id;
     public String titulo;
-    public String premissaMaior;
-    public String premissaMenor;
-    public String conclusao;
+    public ProposicaoDTO premissaMaior;
+    public ProposicaoDTO premissaMenor;
+    public ProposicaoDTO conclusao;
     public String modo;
     public Long turmaId;
     public boolean valido;
@@ -20,8 +20,8 @@ public class SilogismoResponseDTO {
     public SilogismoResponseDTO() {
     }
 
-    public SilogismoResponseDTO(Long id, String titulo, String premissaMaior, String premissaMenor,
-                                String conclusao, String modo, Long turmaId, boolean valido, Instant criadoEm) {
+    public SilogismoResponseDTO(Long id, String titulo, ProposicaoDTO premissaMaior, ProposicaoDTO premissaMenor,
+                                ProposicaoDTO conclusao, String modo, Long turmaId, boolean valido, Instant criadoEm) {
         this.id = id;
         this.titulo = titulo;
         this.premissaMaior = premissaMaior;
@@ -40,9 +40,9 @@ public class SilogismoResponseDTO {
         return new SilogismoResponseDTO(
                 entity.id,
                 entity.titulo,
-                entity.premissaMaior,
-                entity.premissaMenor,
-                entity.conclusao,
+                ProposicaoDTO.fromEntity(entity.premissaMaior),
+                ProposicaoDTO.fromEntity(entity.premissaMenor),
+                ProposicaoDTO.fromEntity(entity.conclusao),
                 entity.modo,
                 entity.turmaId,
                 entity.valido,
@@ -57,9 +57,9 @@ public class SilogismoResponseDTO {
         return new SilogismoResponseDTO(
                 domain.getId(),
                 domain.getTitulo(),
-                domain.getPremissaMaior(),
-                domain.getPremissaMenor(),
-                domain.getConclusao(),
+                ProposicaoDTO.fromDomain(domain.getPremissaMaior()),
+                ProposicaoDTO.fromDomain(domain.getPremissaMenor()),
+                ProposicaoDTO.fromDomain(domain.getConclusao()),
                 domain.getModo(),
                 domain.getTurmaId(),
                 domain.isValido(),

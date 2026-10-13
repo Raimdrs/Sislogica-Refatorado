@@ -1,5 +1,6 @@
 package com.sislogica.api.dto;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -10,14 +11,17 @@ public class SilogismoRequestDTO {
     @Size(max = 150, message = "O título deve ter no máximo 150 caracteres")
     public String titulo;
 
-    @NotBlank(message = "A premissa maior é obrigatória")
-    public String premissaMaior;
+    @NotNull(message = "A premissa maior é obrigatória")
+    @Valid
+    public ProposicaoDTO premissaMaior;
 
-    @NotBlank(message = "A premissa menor é obrigatória")
-    public String premissaMenor;
+    @NotNull(message = "A premissa menor é obrigatória")
+    @Valid
+    public ProposicaoDTO premissaMenor;
 
-    @NotBlank(message = "A conclusão é obrigatória")
-    public String conclusao;
+    @NotNull(message = "A conclusão é obrigatória")
+    @Valid
+    public ProposicaoDTO conclusao;
 
     @NotBlank(message = "O modo é obrigatório")
     @Size(max = 40, message = "O modo deve ter no máximo 40 caracteres")
@@ -29,8 +33,8 @@ public class SilogismoRequestDTO {
     public SilogismoRequestDTO() {
     }
 
-    public SilogismoRequestDTO(String titulo, String premissaMaior, String premissaMenor,
-                               String conclusao, String modo, Long turmaId) {
+    public SilogismoRequestDTO(String titulo, ProposicaoDTO premissaMaior, ProposicaoDTO premissaMenor,
+                               ProposicaoDTO conclusao, String modo, Long turmaId) {
         this.titulo = titulo;
         this.premissaMaior = premissaMaior;
         this.premissaMenor = premissaMenor;

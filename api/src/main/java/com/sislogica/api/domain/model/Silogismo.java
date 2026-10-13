@@ -10,9 +10,9 @@ public class Silogismo {
 
     private Long id;
     private String titulo;
-    private String premissaMaior;
-    private String premissaMenor;
-    private String conclusao;
+    private Proposicao premissaMaior;
+    private Proposicao premissaMenor;
+    private Proposicao conclusao;
     private String modo;
     private Long turmaId;
     private boolean valido;
@@ -21,8 +21,8 @@ public class Silogismo {
     public Silogismo() {
     }
 
-    public Silogismo(Long id, String titulo, String premissaMaior, String premissaMenor,
-                     String conclusao, String modo, Long turmaId, boolean valido, Instant criadoEm) {
+    public Silogismo(Long id, String titulo, Proposicao premissaMaior, Proposicao premissaMenor,
+                     Proposicao conclusao, String modo, Long turmaId, boolean valido, Instant criadoEm) {
         this.id = id;
         this.titulo = titulo;
         this.premissaMaior = premissaMaior;
@@ -50,27 +50,27 @@ public class Silogismo {
         this.titulo = titulo;
     }
 
-    public String getPremissaMaior() {
+    public Proposicao getPremissaMaior() {
         return premissaMaior;
     }
 
-    public void setPremissaMaior(String premissaMaior) {
+    public void setPremissaMaior(Proposicao premissaMaior) {
         this.premissaMaior = premissaMaior;
     }
 
-    public String getPremissaMenor() {
+    public Proposicao getPremissaMenor() {
         return premissaMenor;
     }
 
-    public void setPremissaMenor(String premissaMenor) {
+    public void setPremissaMenor(Proposicao premissaMenor) {
         this.premissaMenor = premissaMenor;
     }
 
-    public String getConclusao() {
+    public Proposicao getConclusao() {
         return conclusao;
     }
 
-    public void setConclusao(String conclusao) {
+    public void setConclusao(Proposicao conclusao) {
         this.conclusao = conclusao;
     }
 

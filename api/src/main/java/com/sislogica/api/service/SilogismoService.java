@@ -30,9 +30,9 @@ public class SilogismoService {
         Silogismo domain = new Silogismo(
                 null,
                 dto.titulo,
-                dto.premissaMaior,
-                dto.premissaMenor,
-                dto.conclusao,
+                dto.premissaMaior != null ? dto.premissaMaior.toDomain() : null,
+                dto.premissaMenor != null ? dto.premissaMenor.toDomain() : null,
+                dto.conclusao != null ? dto.conclusao.toDomain() : null,
                 dto.modo,
                 dto.turmaId,
                 true,
@@ -63,9 +63,9 @@ public class SilogismoService {
 
         Silogismo domain = existente.get();
         domain.setTitulo(dto.titulo);
-        domain.setPremissaMaior(dto.premissaMaior);
-        domain.setPremissaMenor(dto.premissaMenor);
-        domain.setConclusao(dto.conclusao);
+        domain.setPremissaMaior(dto.premissaMaior != null ? dto.premissaMaior.toDomain() : null);
+        domain.setPremissaMenor(dto.premissaMenor != null ? dto.premissaMenor.toDomain() : null);
+        domain.setConclusao(dto.conclusao != null ? dto.conclusao.toDomain() : null);
         domain.setModo(dto.modo);
         domain.setTurmaId(dto.turmaId);
 
