@@ -44,6 +44,7 @@ O projeto está organizado como um monorepo modular:
 │   ├── issues/                # Especificação detalhada de cada issue/história
 │   └── sprints/               # Planejamento detalhado por sprint
 ├── docker-compose.yml         # Serviços auxiliares (PostgreSQL 16)
+├── example.env                # Template de variáveis de ambiente do banco de dados
 ├── mise.toml                  # Automação de tarefas de build/test
 └── README.md
 ```
@@ -72,7 +73,20 @@ O projeto está organizado como um monorepo modular:
 
 ---
 
-### 2. Gerenciando a Infraestrutura (Banco de Dados PostgreSQL)
+### 2. Configurar as Variáveis de Ambiente (`.env`)
+
+Antes de subir o banco de dados e a aplicação, crie os arquivos `.env` na raiz do projeto (utilizado pelo `docker-compose.yml`) e em `api/.env` (lido automaticamente pelo Quarkus) a partir do arquivo de exemplo `example.env`:
+
+```bash
+cp example.env .env
+cp example.env api/.env
+```
+
+> Caso necessário, ajuste as credenciais, host ou porta (`DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`) nos arquivos `.env` gerados.
+
+---
+
+### 3. Gerenciando a Infraestrutura (Banco de Dados PostgreSQL)
 
 O banco de dados PostgreSQL roda isolado via contêiner configurado no `docker-compose.yml`.
 
@@ -97,7 +111,7 @@ O banco de dados PostgreSQL roda isolado via contêiner configurado no `docker-c
 
 ---
 
-### 3. Rodar os Serviços
+### 4. Rodar os Serviços
 
 #### A. Serviço Principal (Java / Quarkus)
 Navegue até a pasta `api/`. Caso esteja no Linux/macOS e seja a primeira execução, garanta a permissão de execução no wrapper com `chmod +x mvnw`.
@@ -127,11 +141,12 @@ go run main.go
 
 ---
 
-### 4. Executar Testes e Builds
+### 5. Executar Testes e Builds
 
 #### Via `mise` (Automação Monorepo):
 Se tiver o `mise` instalado, execute a partir da raiz:
 ```bash
+mise run env     # Cria os arquivos .env e api/.env a partir do example.env (se não existirem)
 mise run build   # Compila ambos os serviços (Java e Go)
 mise run test    # Executa os testes de integração e unitários de ambos
 ```

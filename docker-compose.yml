@@ -6,11 +6,11 @@ services:
     env_file:
       - .env
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-${DB_NAME}}
-      POSTGRES_USER: ${POSTGRES_USER:-${DB_USER}}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-${DB_PASSWORD}}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
-      - "${POSTGRES_PORT:-${DB_PORT:-5432}}:5432"
+      - "${DB_PORT}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
