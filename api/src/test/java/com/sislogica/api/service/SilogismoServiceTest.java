@@ -1,7 +1,11 @@
 package com.sislogica.api.service;
 
+import com.sislogica.api.domain.model.Proposicao;
+import com.sislogica.api.domain.model.Quantificador;
 import com.sislogica.api.domain.model.Silogismo;
+import com.sislogica.api.domain.model.Termo;
 import com.sislogica.api.domain.repository.SilogismoRepositoryPort;
+import com.sislogica.api.dto.ProposicaoDTO;
 import com.sislogica.api.dto.SilogismoRequestDTO;
 import com.sislogica.api.dto.SilogismoResponseDTO;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,15 +22,22 @@ class SilogismoServiceTest {
 
     private SilogismoService service;
     private Silogismo domainModel;
+    private ProposicaoDTO premissaMaiorDTO;
+    private ProposicaoDTO premissaMenorDTO;
+    private ProposicaoDTO conclusaoDTO;
 
     @BeforeEach
     void setUp() {
+        premissaMaiorDTO = new ProposicaoDTO(Quantificador.A, Termo.M, Termo.T, "Todo M é T");
+        premissaMenorDTO = new ProposicaoDTO(Quantificador.A, Termo.t, Termo.M, "Todo t é M");
+        conclusaoDTO = new ProposicaoDTO(Quantificador.A, Termo.t, Termo.T, "Todo t é T");
+
         domainModel = new Silogismo(
                 1L,
                 "Barbara Teste",
-                "Todo M é P",
-                "Todo S é M",
-                "Todo S é P",
+                new Proposicao(1L, Quantificador.A, Termo.M, Termo.T, "Todo M é T"),
+                new Proposicao(2L, Quantificador.A, Termo.t, Termo.M, "Todo t é M"),
+                new Proposicao(3L, Quantificador.A, Termo.t, Termo.T, "Todo t é T"),
                 "BARBARA",
                 1L,
                 true,
@@ -69,9 +80,9 @@ class SilogismoServiceTest {
 
         SilogismoRequestDTO requestDTO = new SilogismoRequestDTO(
                 "Barbara Teste",
-                "Todo M é P",
-                "Todo S é M",
-                "Todo S é P",
+                premissaMaiorDTO,
+                premissaMenorDTO,
+                conclusaoDTO,
                 "BARBARA",
                 1L
         );
@@ -81,6 +92,7 @@ class SilogismoServiceTest {
         assertNotNull(responseDTO);
         assertEquals(10L, responseDTO.id);
         assertEquals("Barbara Teste", responseDTO.titulo);
+        assertEquals(premissaMaiorDTO, responseDTO.premissaMaior);
         assertTrue(responseDTO.valido);
     }
 
@@ -194,9 +206,9 @@ class SilogismoServiceTest {
 
         SilogismoRequestDTO dto = new SilogismoRequestDTO(
                 "Barbara Atualizado",
-                "Todo M é P",
-                "Todo S é M",
-                "Todo S é P",
+                premissaMaiorDTO,
+                premissaMenorDTO,
+                conclusaoDTO,
                 "BARBARA",
                 1L
         );
@@ -241,9 +253,9 @@ class SilogismoServiceTest {
 
         SilogismoRequestDTO dto = new SilogismoRequestDTO(
                 "Barbara Atualizado",
-                "Todo M é P",
-                "Todo S é M",
-                "Todo S é P",
+                premissaMaiorDTO,
+                premissaMenorDTO,
+                conclusaoDTO,
                 "BARBARA",
                 1L
         );

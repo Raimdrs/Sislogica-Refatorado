@@ -1,8 +1,10 @@
 package com.sislogica.api.controller;
 
+import com.sislogica.api.domain.model.Quantificador;
+import com.sislogica.api.domain.model.Termo;
+import com.sislogica.api.dto.ProposicaoDTO;
 import com.sislogica.api.dto.SilogismoRequestDTO;
 import com.sislogica.api.dto.SilogismoResponseDTO;
-import com.sislogica.api.infrastructure.entity.SilogismoPanacheEntity;
 import com.sislogica.api.service.SilogismoService;
 import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,16 +22,23 @@ class SilogismoResourceUnitTest {
 
     private SilogismoResource resource;
     private SilogismoResponseDTO mockResponseDTO;
+    private ProposicaoDTO premissaMaiorDTO;
+    private ProposicaoDTO premissaMenorDTO;
+    private ProposicaoDTO conclusaoDTO;
 
     @BeforeEach
     void setUp() {
         resource = new SilogismoResource();
+        premissaMaiorDTO = new ProposicaoDTO(Quantificador.A, Termo.M, Termo.T, "Todo M é T");
+        premissaMenorDTO = new ProposicaoDTO(Quantificador.A, Termo.t, Termo.M, "Todo t é M");
+        conclusaoDTO = new ProposicaoDTO(Quantificador.A, Termo.t, Termo.T, "Todo t é T");
+
         mockResponseDTO = new SilogismoResponseDTO(
                 1L,
                 "Barbara Teste",
-                "Todo M é P",
-                "Todo S é M",
-                "Todo S é P",
+                premissaMaiorDTO,
+                premissaMenorDTO,
+                conclusaoDTO,
                 "BARBARA",
                 1L,
                 true,
@@ -42,9 +51,9 @@ class SilogismoResourceUnitTest {
     void deveCriarSilogismoERetornar201ComLocation() {
         SilogismoRequestDTO requestDTO = new SilogismoRequestDTO(
                 "Barbara Teste",
-                "Todo M é P",
-                "Todo S é M",
-                "Todo S é P",
+                premissaMaiorDTO,
+                premissaMenorDTO,
+                conclusaoDTO,
                 "BARBARA",
                 1L
         );
@@ -115,9 +124,9 @@ class SilogismoResourceUnitTest {
     void deveRetornar200AoAtualizarSilogismo() {
         SilogismoRequestDTO requestDTO = new SilogismoRequestDTO(
                 "Barbara Atualizado",
-                "Todo M é P",
-                "Todo S é M",
-                "Todo S é P",
+                premissaMaiorDTO,
+                premissaMenorDTO,
+                conclusaoDTO,
                 "BARBARA",
                 1L
         );
@@ -140,9 +149,9 @@ class SilogismoResourceUnitTest {
     void deveRetornar404AoAtualizarSilogismoInexistente() {
         SilogismoRequestDTO requestDTO = new SilogismoRequestDTO(
                 "Barbara Atualizado",
-                "Todo M é P",
-                "Todo S é M",
-                "Todo S é P",
+                premissaMaiorDTO,
+                premissaMenorDTO,
+                conclusaoDTO,
                 "BARBARA",
                 1L
         );

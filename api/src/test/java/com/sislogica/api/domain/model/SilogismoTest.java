@@ -15,12 +15,16 @@ public class SilogismoTest {
     @DisplayName("Deve instanciar um Silogismo com todos os atributos válidos")
     void deveInstanciarSilogismoCorretamente() {
         Instant agora = Instant.now();
+        Proposicao premissaMaior = new Proposicao(Quantificador.A, Termo.M, Termo.T, "Todo homem é mortal");
+        Proposicao premissaMenor = new Proposicao(Quantificador.A, Termo.t, Termo.M, "Sócrates é homem");
+        Proposicao conclusao = new Proposicao(Quantificador.A, Termo.t, Termo.T, "Sócrates é mortal");
+
         Silogismo silogismo = new Silogismo(
             1L,
             "Silogismo Barbara",
-            "Todo homem é mortal",
-            "Sócrates é homem",
-            "Sócrates é mortal",
+            premissaMaior,
+            premissaMenor,
+            conclusao,
             "BARBARA",
             10L,
             true,
@@ -29,9 +33,9 @@ public class SilogismoTest {
 
         assertEquals(1L, silogismo.getId());
         assertEquals("Silogismo Barbara", silogismo.getTitulo());
-        assertEquals("Todo homem é mortal", silogismo.getPremissaMaior());
-        assertEquals("Sócrates é homem", silogismo.getPremissaMenor());
-        assertEquals("Sócrates é mortal", silogismo.getConclusao());
+        assertEquals(premissaMaior, silogismo.getPremissaMaior());
+        assertEquals(premissaMenor, silogismo.getPremissaMenor());
+        assertEquals(conclusao, silogismo.getConclusao());
         assertEquals("BARBARA", silogismo.getModo());
         assertEquals(10L, silogismo.getTurmaId());
         assertTrue(silogismo.isValido());
@@ -44,9 +48,9 @@ public class SilogismoTest {
         Silogismo silogismo = new Silogismo(
             2L,
             "Silogismo Celarent",
-            "Nenhum réptil tem pelos",
-            "Toda cobra é réptil",
-            "Nenhuma cobra tem pelos",
+            new Proposicao(Quantificador.E, Termo.M, Termo.T, "Nenhum réptil tem pelos"),
+            new Proposicao(Quantificador.A, Termo.t, Termo.M, "Toda cobra é réptil"),
+            new Proposicao(Quantificador.E, Termo.t, Termo.T, "Nenhuma cobra tem pelos"),
             "CELARENT",
             10L,
             true,

@@ -60,9 +60,12 @@ ehthumbs.db
 
 # ==========================================
 # Logs & Variáveis de Ambiente
-# ==========================
+# ==========================================
 *.log
 .env
+**/.env
 .env.local
 .env.*.local
+!example.env
+!**/example.env
 

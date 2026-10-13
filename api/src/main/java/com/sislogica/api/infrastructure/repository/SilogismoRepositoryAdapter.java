@@ -1,7 +1,9 @@
 package com.sislogica.api.infrastructure.repository;
 
+import com.sislogica.api.domain.model.Proposicao;
 import com.sislogica.api.domain.model.Silogismo;
 import com.sislogica.api.domain.repository.SilogismoRepositoryPort;
+import com.sislogica.api.infrastructure.entity.ProposicaoPanacheEntity;
 import com.sislogica.api.infrastructure.entity.SilogismoPanacheEntity;
 import io.quarkus.panache.common.Page;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -25,9 +27,9 @@ public class SilogismoRepositoryAdapter implements SilogismoRepositoryPort {
         }
 
         entity.titulo = silogismo.getTitulo();
-        entity.premissaMaior = silogismo.getPremissaMaior();
-        entity.premissaMenor = silogismo.getPremissaMenor();
-        entity.conclusao = silogismo.getConclusao();
+        entity.premissaMaior = toProposicaoEntity(entity.premissaMaior, silogismo.getPremissaMaior());
+        entity.premissaMenor = toProposicaoEntity(entity.premissaMenor, silogismo.getPremissaMenor());
+        entity.conclusao = toProposicaoEntity(entity.conclusao, silogismo.getConclusao());
         entity.modo = silogismo.getModo();
         entity.turmaId = silogismo.getTurmaId();
         entity.valido = silogismo.isValido();
@@ -78,13 +80,38 @@ public class SilogismoRepositoryAdapter implements SilogismoRepositoryPort {
         return SilogismoPanacheEntity.deleteById(id);
     }
 
+    private ProposicaoPanacheEntity toProposicaoEntity(ProposicaoPanacheEntity existing, Proposicao domain) {
+        if (domain == null) {
+            return null;
+        }
+        ProposicaoPanacheEntity propEntity = existing != null ? existing : new ProposicaoPanacheEntity();
+        propEntity.quantificador = domain.getQuantificador();
+        propEntity.sujeito = domain.getSujeito();
+        propEntity.predicado = domain.getPredicado();
+        propEntity.transliteracao = domain.getTransliteracao();
+        return propEntity;
+    }
+
+    private Proposicao toProposicaoDomain(ProposicaoPanacheEntity entity) {
+        if (entity == null) {
+            return null;
+        }
+        return new Proposicao(
+                entity.id,
+                entity.quantificador,
+                entity.sujeito,
+                entity.predicado,
+                entity.transliteracao
+        );
+    }
+
     private Silogismo toDomain(SilogismoPanacheEntity entity) {
         return new Silogismo(
                 entity.id,
                 entity.titulo,
-                entity.premissaMaior,
-                entity.premissaMenor,
-                entity.conclusao,
+                toProposicaoDomain(entity.premissaMaior),
+                toProposicaoDomain(entity.premissaMenor),
+                toProposicaoDomain(entity.conclusao),
                 entity.modo,
                 entity.turmaId,
                 entity.valido,
