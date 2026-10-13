@@ -16,11 +16,11 @@ Estruturar a fundação de banco de dados relacional (PostgreSQL) para o serviç
 - [x] Configurar `application.properties` com credenciais e estratégias de migração.
 - [x] Escrever migrações DDL: `V1__create_turmas_table.sql` e `V2__create_silogismos_table.sql`.
 - [x] Criar classe de teste de arquitetura `ArchitectureTest.java` com ArchUnit.
-- [ ] Validar execução das migrações do Flyway durante o ciclo de testes sem falhas de DDL.
+- [x] Validar execução das migrações do Flyway durante o ciclo de testes sem falhas de DDL.
 
 ## Testes Exigidos
 - [x] Compilação do projeto com as novas dependências (`BUILD SUCCESS`).
-- [ ] Execução das migrações do Flyway nos testes automatizados.
+- [x] Execução das migrações do Flyway nos testes automatizados.
 - [x] Teste de arquitetura do ArchUnit passando no CI.
 
 ## Responsável Sugerido

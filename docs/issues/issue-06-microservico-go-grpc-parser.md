@@ -14,12 +14,12 @@ Para processar fórmulas proposicionais complexas de forma escalável e com baix
 
 ## Tasks Técnicas
 - [ ] Modelar o schema protobuf e gerar stubs para Go e Java.
-- [ ] Implementar lexer e parser formal em Go (gramática LL(1) / Pratt parser ou Shunting-yard em Go).
+- [x] Implementar lexer e parser formal em Go (extração de variáveis e validação sintática em `services/parser`).
 - [ ] Configurar servidor gRPC em Go com logs estruturados.
 - [ ] Integrar cliente gRPC no Quarkus no serviço `ParserClientService`.
 
 ## Testes Exigidos
-- [ ] Testes unitários do parser em Go cobrindo fórmulas malformadas (ex: `P ^^ Q`, `(P -> Q`).
+- [x] Testes unitários do parser em Go cobrindo fórmulas malformadas e extração de variáveis (`main_test.go`).
 - [ ] Testes de integração gRPC entre Quarkus e o serviço Go.
 
 ## Labels / Estimativa
