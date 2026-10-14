@@ -144,6 +144,7 @@ public class SilogismoRepositoryAdapter implements SilogismoRepositoryPort {
         detalheEntity.nome = domain.getNome();
         detalheEntity.valido = domain.isValido();
         detalheEntity.reduzivel = domain.isReduzivel();
+        detalheEntity.erros = domain.getErros() != null ? new java.util.ArrayList<>(domain.getErros()) : null;
         detalheEntity.reducao = toReducaoEntity(detalheEntity.reducao, domain.getReducao());
         return detalheEntity;
     }
@@ -158,7 +159,8 @@ public class SilogismoRepositoryAdapter implements SilogismoRepositoryPort {
                 entity.nome,
                 entity.valido,
                 entity.reduzivel,
-                toReducaoDomain(entity.reducao)
+                toReducaoDomain(entity.reducao),
+                entity.erros
         );
     }
 

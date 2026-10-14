@@ -7,6 +7,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
+import java.util.List;
 
 @Entity
 @Table(name = "silogismo_detalhes")
@@ -23,6 +27,10 @@ public class SilogismoDetalhePanacheEntity extends PanacheEntity {
 
     @Column(name = "reduzivel", nullable = false)
     public boolean reduzivel;
+
+    @JdbcTypeCode(SqlTypes.ARRAY)
+    @Column(name = "erros")
+    public List<String> erros;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "reducao_id", unique = true)

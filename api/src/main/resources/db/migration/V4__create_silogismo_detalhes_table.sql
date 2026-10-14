@@ -17,9 +17,12 @@ CREATE TABLE silogismo_detalhes (
     nome VARCHAR(60),
     valido BOOLEAN NOT NULL,
     reduzivel BOOLEAN NOT NULL,
+    erros TEXT[],
     reducao_id BIGINT UNIQUE,
     CONSTRAINT fk_detalhe_reducao FOREIGN KEY (reducao_id) REFERENCES silogismo_reducoes(id) ON DELETE CASCADE,
-    CONSTRAINT chk_detalhe_reducao_obrigatoria CHECK (NOT reduzivel OR reducao_id IS NOT NULL)
+    CONSTRAINT chk_detalhe_reducao_obrigatoria CHECK (NOT reduzivel OR reducao_id IS NOT NULL),
+    CONSTRAINT chk_detalhe_erros_obrigatorios CHECK (valido OR (erros IS NOT NULL AND cardinality(erros) > 0)),
+    CONSTRAINT chk_detalhe_erros_quando_valido CHECK (NOT valido OR erros IS NULL OR cardinality(erros) = 0)
 );
 
 CREATE INDEX idx_silogismo_detalhes_modo ON silogismo_detalhes(modo);

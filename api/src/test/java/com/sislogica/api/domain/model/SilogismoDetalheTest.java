@@ -59,14 +59,64 @@ class SilogismoDetalheTest {
     }
 
     @Test
-    @DisplayName("Deve permitir modo e nome opcionais (nulos) em SilogismoDetalhe")
+    @DisplayName("Deve permitir modo e nome opcionais (nulos) em SilogismoDetalhe inválido com erros")
     void devePermitirModoENomeOpcionais() {
-        SilogismoDetalhe detalhe = new SilogismoDetalhe(null, null, false, false, null);
+        SilogismoDetalhe detalhe = new SilogismoDetalhe(
+                null,
+                null,
+                false,
+                false,
+                null,
+                java.util.List.of("Termo médio não distribuído")
+        );
 
         assertNull(detalhe.getModo());
         assertNull(detalhe.getNome());
         assertFalse(detalhe.isValido());
         assertFalse(detalhe.isReduzivel());
+        assertEquals(1, detalhe.getErros().size());
+        assertEquals("Termo médio não distribuído", detalhe.getErros().getFirst());
+    }
+
+    @Test
+    @DisplayName("Deve lançar IllegalArgumentException quando silogismo for inválido e não contiver erros")
+    void deveExigirErrosQuandoSilogismoForInvalido() {
+        IllegalArgumentException ex1 = assertThrows(IllegalArgumentException.class,
+                () -> new SilogismoDetalhe("AAA-1", "Modo Invalido", false, false, null));
+        assertEquals("Os erros são obrigatórios quando o silogismo for inválido", ex1.getMessage());
+
+        IllegalArgumentException ex2 = assertThrows(IllegalArgumentException.class,
+                () -> new SilogismoDetalhe("AAA-1", "Modo Invalido", false, false, null, java.util.List.of()));
+        assertEquals("Os erros são obrigatórios quando o silogismo for inválido", ex2.getMessage());
+
+        IllegalArgumentException ex3 = assertThrows(IllegalArgumentException.class,
+                () -> new SilogismoDetalhe("AAA-1", "Modo Invalido", false, false, null, null));
+        assertEquals("Os erros são obrigatórios quando o silogismo for inválido", ex3.getMessage());
+    }
+
+    @Test
+    @DisplayName("Deve lançar IllegalArgumentException quando silogismo for válido mas contiver erros")
+    void deveRejeitarErrosQuandoSilogismoForValido() {
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+                () -> new SilogismoDetalhe("AAA-1", "Barbara", true, false, null, java.util.List.of("Erro fantasma")));
+        assertEquals("Um silogismo válido não deve conter erros", ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Deve validar setter de erros de acordo com o estado de validade")
+    void deveValidarSetterDeErros() {
+        SilogismoDetalhe detalheValido = new SilogismoDetalhe(1L, "AAA-1", "Barbara", true, false, null);
+        assertThrows(IllegalArgumentException.class,
+                () -> detalheValido.setErros(java.util.List.of("Erro inesperado")));
+
+        SilogismoDetalhe detalheInvalido = new SilogismoDetalhe(
+                2L, null, null, false, false, null, java.util.List.of("Erro 1")
+        );
+        assertThrows(IllegalArgumentException.class, () -> detalheInvalido.setErros(null));
+        assertThrows(IllegalArgumentException.class, () -> detalheInvalido.setErros(java.util.List.of()));
+
+        detalheInvalido.setErros(java.util.List.of("Novo erro"));
+        assertEquals(java.util.List.of("Novo erro"), detalheInvalido.getErros());
     }
 
     @Test

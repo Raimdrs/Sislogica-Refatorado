@@ -1,5 +1,8 @@
 package com.sislogica.api.domain.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -15,25 +18,35 @@ public class SilogismoDetalhe {
     private Boolean valido;
     private Boolean reduzivel;
     private Reducao reducao;
+    private List<String> erros = new ArrayList<>();
 
     public SilogismoDetalhe() {
     }
 
     public SilogismoDetalhe(String modo, String nome, Boolean valido, Boolean reduzivel, Reducao reducao) {
-        this(null, modo, nome, valido, reduzivel, reducao);
+        this(null, modo, nome, valido, reduzivel, reducao, null);
+    }
+
+    public SilogismoDetalhe(String modo, String nome, Boolean valido, Boolean reduzivel, Reducao reducao, List<String> erros) {
+        this(null, modo, nome, valido, reduzivel, reducao, erros);
     }
 
     public SilogismoDetalhe(Long id, String modo, String nome, Boolean valido, Boolean reduzivel, Reducao reducao) {
-        validarCampos(valido, reduzivel, reducao);
+        this(id, modo, nome, valido, reduzivel, reducao, null);
+    }
+
+    public SilogismoDetalhe(Long id, String modo, String nome, Boolean valido, Boolean reduzivel, Reducao reducao, List<String> erros) {
+        validarCampos(valido, reduzivel, reducao, erros);
         this.id = id;
         this.modo = modo;
         this.nome = nome;
         this.valido = valido;
         this.reduzivel = reduzivel;
         this.reducao = reducao;
+        this.erros = erros != null ? new ArrayList<>(erros) : new ArrayList<>();
     }
 
-    private static void validarCampos(Boolean valido, Boolean reduzivel, Reducao reducao) {
+    private static void validarCampos(Boolean valido, Boolean reduzivel, Reducao reducao, List<String> erros) {
         if (valido == null) {
             throw new IllegalArgumentException("O campo 'valido' do detalhe do silogismo é obrigatório");
         }
@@ -42,6 +55,12 @@ public class SilogismoDetalhe {
         }
         if (reduzivel && reducao == null) {
             throw new IllegalArgumentException("A redução é obrigatória quando o silogismo é reduzível");
+        }
+        if (!valido && (erros == null || erros.isEmpty())) {
+            throw new IllegalArgumentException("Os erros são obrigatórios quando o silogismo for inválido");
+        }
+        if (valido && erros != null && !erros.isEmpty()) {
+            throw new IllegalArgumentException("Um silogismo válido não deve conter erros");
         }
     }
 
@@ -81,6 +100,12 @@ public class SilogismoDetalhe {
         if (valido == null) {
             throw new IllegalArgumentException("O campo 'valido' do detalhe do silogismo é obrigatório");
         }
+        if (!valido && (this.erros == null || this.erros.isEmpty())) {
+            throw new IllegalArgumentException("Os erros são obrigatórios quando o silogismo for inválido");
+        }
+        if (valido && this.erros != null && !this.erros.isEmpty()) {
+            throw new IllegalArgumentException("Um silogismo válido não deve conter erros");
+        }
         this.valido = valido;
     }
 
@@ -110,6 +135,20 @@ public class SilogismoDetalhe {
         this.reducao = reducao;
     }
 
+    public List<String> getErros() {
+        return erros != null ? Collections.unmodifiableList(erros) : Collections.emptyList();
+    }
+
+    public void setErros(List<String> erros) {
+        if (Boolean.FALSE.equals(this.valido) && (erros == null || erros.isEmpty())) {
+            throw new IllegalArgumentException("Os erros são obrigatórios quando o silogismo for inválido");
+        }
+        if (Boolean.TRUE.equals(this.valido) && erros != null && !erros.isEmpty()) {
+            throw new IllegalArgumentException("Um silogismo válido não deve conter erros");
+        }
+        this.erros = erros != null ? new ArrayList<>(erros) : new ArrayList<>();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -120,11 +159,12 @@ public class SilogismoDetalhe {
                 && Objects.equals(nome, that.nome)
                 && Objects.equals(valido, that.valido)
                 && Objects.equals(reduzivel, that.reduzivel)
-                && Objects.equals(reducao, that.reducao);
+                && Objects.equals(reducao, that.reducao)
+                && Objects.equals(erros, that.erros);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, modo, nome, valido, reduzivel, reducao);
+        return Objects.hash(id, modo, nome, valido, reduzivel, reducao, erros);
     }
 }
