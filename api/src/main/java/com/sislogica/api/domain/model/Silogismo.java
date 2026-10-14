@@ -13,24 +13,22 @@ public class Silogismo {
     private Proposicao premissaMaior;
     private Proposicao premissaMenor;
     private Proposicao conclusao;
-    private String modo;
     private Long turmaId;
-    private boolean valido;
+    private SilogismoDetalhe detalhe;
     private Instant criadoEm;
 
     public Silogismo() {
     }
 
     public Silogismo(Long id, String titulo, Proposicao premissaMaior, Proposicao premissaMenor,
-                     Proposicao conclusao, String modo, Long turmaId, boolean valido, Instant criadoEm) {
+                     Proposicao conclusao, Long turmaId, SilogismoDetalhe detalhe, Instant criadoEm) {
         this.id = id;
         this.titulo = titulo;
         this.premissaMaior = premissaMaior;
         this.premissaMenor = premissaMenor;
         this.conclusao = conclusao;
-        this.modo = modo;
         this.turmaId = turmaId;
-        this.valido = valido;
+        this.detalhe = detalhe;
         this.criadoEm = criadoEm != null ? criadoEm : Instant.now();
     }
 
@@ -74,14 +72,6 @@ public class Silogismo {
         this.conclusao = conclusao;
     }
 
-    public String getModo() {
-        return modo;
-    }
-
-    public void setModo(String modo) {
-        this.modo = modo;
-    }
-
     public Long getTurmaId() {
         return turmaId;
     }
@@ -90,12 +80,12 @@ public class Silogismo {
         this.turmaId = turmaId;
     }
 
-    public boolean isValido() {
-        return valido;
+    public SilogismoDetalhe getDetalhe() {
+        return detalhe;
     }
 
-    public void setValido(boolean valido) {
-        this.valido = valido;
+    public void setDetalhe(SilogismoDetalhe detalhe) {
+        this.detalhe = detalhe;
     }
 
     public Instant getCriadoEm() {
@@ -106,4 +96,3 @@ public class Silogismo {
         this.criadoEm = criadoEm;
     }
 }
-

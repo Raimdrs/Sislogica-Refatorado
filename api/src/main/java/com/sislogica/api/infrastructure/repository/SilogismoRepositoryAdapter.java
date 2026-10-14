@@ -1,9 +1,13 @@
 package com.sislogica.api.infrastructure.repository;
 
 import com.sislogica.api.domain.model.Proposicao;
+import com.sislogica.api.domain.model.Reducao;
 import com.sislogica.api.domain.model.Silogismo;
+import com.sislogica.api.domain.model.SilogismoDetalhe;
 import com.sislogica.api.domain.repository.SilogismoRepositoryPort;
 import com.sislogica.api.infrastructure.entity.ProposicaoPanacheEntity;
+import com.sislogica.api.infrastructure.entity.ReducaoPanacheEntity;
+import com.sislogica.api.infrastructure.entity.SilogismoDetalhePanacheEntity;
 import com.sislogica.api.infrastructure.entity.SilogismoPanacheEntity;
 import io.quarkus.panache.common.Page;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -30,9 +34,8 @@ public class SilogismoRepositoryAdapter implements SilogismoRepositoryPort {
         entity.premissaMaior = toProposicaoEntity(entity.premissaMaior, silogismo.getPremissaMaior());
         entity.premissaMenor = toProposicaoEntity(entity.premissaMenor, silogismo.getPremissaMenor());
         entity.conclusao = toProposicaoEntity(entity.conclusao, silogismo.getConclusao());
-        entity.modo = silogismo.getModo();
         entity.turmaId = silogismo.getTurmaId();
-        entity.valido = silogismo.isValido();
+        entity.detalhe = toDetalheEntity(entity.detalhe, silogismo.getDetalhe());
         if (silogismo.getCriadoEm() != null) {
             entity.criadoEm = silogismo.getCriadoEm();
         }
@@ -60,7 +63,7 @@ public class SilogismoRepositoryAdapter implements SilogismoRepositoryPort {
     @Override
     public List<Silogismo> listar(int pagina, int tamanho, String modo) {
         if (modo != null && !modo.isBlank()) {
-            return SilogismoPanacheEntity.<SilogismoPanacheEntity>find("modo", modo)
+            return SilogismoPanacheEntity.<SilogismoPanacheEntity>find("detalhe.modo", modo)
                     .page(Page.of(pagina, tamanho))
                     .list()
                     .stream()
@@ -105,6 +108,60 @@ public class SilogismoRepositoryAdapter implements SilogismoRepositoryPort {
         );
     }
 
+    private ReducaoPanacheEntity toReducaoEntity(ReducaoPanacheEntity existing, Reducao domain) {
+        if (domain == null) {
+            return null;
+        }
+        ReducaoPanacheEntity reducaoEntity = existing != null ? existing : new ReducaoPanacheEntity();
+        reducaoEntity.modo = domain.getModo();
+        reducaoEntity.nome = domain.getNome();
+        reducaoEntity.proposicaoMaior = toProposicaoEntity(reducaoEntity.proposicaoMaior, domain.getProposicaoMaior());
+        reducaoEntity.proposicaoMenor = toProposicaoEntity(reducaoEntity.proposicaoMenor, domain.getProposicaoMenor());
+        reducaoEntity.conclusao = toProposicaoEntity(reducaoEntity.conclusao, domain.getConclusao());
+        return reducaoEntity;
+    }
+
+    private Reducao toReducaoDomain(ReducaoPanacheEntity entity) {
+        if (entity == null) {
+            return null;
+        }
+        return new Reducao(
+                entity.id,
+                entity.modo,
+                entity.nome,
+                toProposicaoDomain(entity.proposicaoMaior),
+                toProposicaoDomain(entity.proposicaoMenor),
+                toProposicaoDomain(entity.conclusao)
+        );
+    }
+
+    private SilogismoDetalhePanacheEntity toDetalheEntity(SilogismoDetalhePanacheEntity existing, SilogismoDetalhe domain) {
+        if (domain == null) {
+            return null;
+        }
+        SilogismoDetalhePanacheEntity detalheEntity = existing != null ? existing : new SilogismoDetalhePanacheEntity();
+        detalheEntity.modo = domain.getModo();
+        detalheEntity.nome = domain.getNome();
+        detalheEntity.valido = domain.isValido();
+        detalheEntity.reduzivel = domain.isReduzivel();
+        detalheEntity.reducao = toReducaoEntity(detalheEntity.reducao, domain.getReducao());
+        return detalheEntity;
+    }
+
+    private SilogismoDetalhe toDetalheDomain(SilogismoDetalhePanacheEntity entity) {
+        if (entity == null) {
+            return null;
+        }
+        return new SilogismoDetalhe(
+                entity.id,
+                entity.modo,
+                entity.nome,
+                entity.valido,
+                entity.reduzivel,
+                toReducaoDomain(entity.reducao)
+        );
+    }
+
     private Silogismo toDomain(SilogismoPanacheEntity entity) {
         return new Silogismo(
                 entity.id,
@@ -112,9 +169,8 @@ public class SilogismoRepositoryAdapter implements SilogismoRepositoryPort {
                 toProposicaoDomain(entity.premissaMaior),
                 toProposicaoDomain(entity.premissaMenor),
                 toProposicaoDomain(entity.conclusao),
-                entity.modo,
                 entity.turmaId,
-                entity.valido,
+                toDetalheDomain(entity.detalhe),
                 entity.criadoEm
         );
     }

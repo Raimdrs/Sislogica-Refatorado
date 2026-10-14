@@ -3,9 +3,11 @@ package com.sislogica.api.service;
 import com.sislogica.api.domain.model.Proposicao;
 import com.sislogica.api.domain.model.Quantificador;
 import com.sislogica.api.domain.model.Silogismo;
+import com.sislogica.api.domain.model.SilogismoDetalhe;
 import com.sislogica.api.domain.model.Termo;
 import com.sislogica.api.domain.repository.SilogismoRepositoryPort;
 import com.sislogica.api.dto.ProposicaoDTO;
+import com.sislogica.api.dto.SilogismoDetalheDTO;
 import com.sislogica.api.dto.SilogismoRequestDTO;
 import com.sislogica.api.dto.SilogismoResponseDTO;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,12 +27,14 @@ class SilogismoServiceTest {
     private ProposicaoDTO premissaMaiorDTO;
     private ProposicaoDTO premissaMenorDTO;
     private ProposicaoDTO conclusaoDTO;
+    private SilogismoDetalheDTO detalheDTO;
 
     @BeforeEach
     void setUp() {
         premissaMaiorDTO = new ProposicaoDTO(Quantificador.A, Termo.M, Termo.T, "Todo M é T");
         premissaMenorDTO = new ProposicaoDTO(Quantificador.A, Termo.t, Termo.M, "Todo t é M");
         conclusaoDTO = new ProposicaoDTO(Quantificador.A, Termo.t, Termo.T, "Todo t é T");
+        detalheDTO = new SilogismoDetalheDTO("AAA-1", "Barbara", true, false, null);
 
         domainModel = new Silogismo(
                 1L,
@@ -38,9 +42,8 @@ class SilogismoServiceTest {
                 new Proposicao(1L, Quantificador.A, Termo.M, Termo.T, "Todo M é T"),
                 new Proposicao(2L, Quantificador.A, Termo.t, Termo.M, "Todo t é M"),
                 new Proposicao(3L, Quantificador.A, Termo.t, Termo.T, "Todo t é T"),
-                "BARBARA",
                 1L,
-                true,
+                new SilogismoDetalhe(1L, "AAA-1", "Barbara", true, false, null),
                 Instant.now()
         );
     }
@@ -83,7 +86,6 @@ class SilogismoServiceTest {
                 premissaMaiorDTO,
                 premissaMenorDTO,
                 conclusaoDTO,
-                "BARBARA",
                 1L
         );
 
@@ -93,11 +95,11 @@ class SilogismoServiceTest {
         assertEquals(10L, responseDTO.id);
         assertEquals("Barbara Teste", responseDTO.titulo);
         assertEquals(premissaMaiorDTO, responseDTO.premissaMaior);
-        assertTrue(responseDTO.valido);
+        assertNull(responseDTO.detalhe);
     }
 
     @Test
-    @DisplayName("Deve buscar silogismo por id existente")
+    @DisplayName("Deve buscar silogismo por id existente retornando detalhe vinculado")
     void deveBuscarSilogismoPorIdExistente() {
         SilogismoRepositoryPort fakeRepo = new SilogismoRepositoryPort() {
             @Override
@@ -132,6 +134,8 @@ class SilogismoServiceTest {
 
         assertTrue(opt.isPresent());
         assertEquals("Barbara Teste", opt.get().titulo);
+        assertNotNull(opt.get().detalhe);
+        assertEquals("AAA-1", opt.get().detalhe.modo());
     }
 
     @Test
@@ -166,10 +170,10 @@ class SilogismoServiceTest {
 
         service = new SilogismoService(fakeRepo);
 
-        List<SilogismoResponseDTO> lista = service.listarPaginado(0, 10, "BARBARA");
+        List<SilogismoResponseDTO> lista = service.listarPaginado(0, 10, "AAA-1");
 
         assertEquals(1, lista.size());
-        assertEquals("BARBARA", lista.getFirst().modo);
+        assertEquals("AAA-1", lista.getFirst().detalhe.modo());
     }
 
     @Test
@@ -209,7 +213,6 @@ class SilogismoServiceTest {
                 premissaMaiorDTO,
                 premissaMenorDTO,
                 conclusaoDTO,
-                "BARBARA",
                 1L
         );
 
@@ -256,7 +259,6 @@ class SilogismoServiceTest {
                 premissaMaiorDTO,
                 premissaMenorDTO,
                 conclusaoDTO,
-                "BARBARA",
                 1L
         );
 

@@ -12,24 +12,22 @@ public class SilogismoResponseDTO {
     public ProposicaoDTO premissaMaior;
     public ProposicaoDTO premissaMenor;
     public ProposicaoDTO conclusao;
-    public String modo;
     public Long turmaId;
-    public boolean valido;
+    public SilogismoDetalheDTO detalhe;
     public Instant criadoEm;
 
     public SilogismoResponseDTO() {
     }
 
     public SilogismoResponseDTO(Long id, String titulo, ProposicaoDTO premissaMaior, ProposicaoDTO premissaMenor,
-                                ProposicaoDTO conclusao, String modo, Long turmaId, boolean valido, Instant criadoEm) {
+                                ProposicaoDTO conclusao, Long turmaId, SilogismoDetalheDTO detalhe, Instant criadoEm) {
         this.id = id;
         this.titulo = titulo;
         this.premissaMaior = premissaMaior;
         this.premissaMenor = premissaMenor;
         this.conclusao = conclusao;
-        this.modo = modo;
         this.turmaId = turmaId;
-        this.valido = valido;
+        this.detalhe = detalhe;
         this.criadoEm = criadoEm;
     }
 
@@ -43,9 +41,8 @@ public class SilogismoResponseDTO {
                 ProposicaoDTO.fromEntity(entity.premissaMaior),
                 ProposicaoDTO.fromEntity(entity.premissaMenor),
                 ProposicaoDTO.fromEntity(entity.conclusao),
-                entity.modo,
                 entity.turmaId,
-                entity.valido,
+                SilogismoDetalheDTO.fromEntity(entity.detalhe),
                 entity.criadoEm
         );
     }
@@ -60,9 +57,8 @@ public class SilogismoResponseDTO {
                 ProposicaoDTO.fromDomain(domain.getPremissaMaior()),
                 ProposicaoDTO.fromDomain(domain.getPremissaMenor()),
                 ProposicaoDTO.fromDomain(domain.getConclusao()),
-                domain.getModo(),
                 domain.getTurmaId(),
-                domain.isValido(),
+                SilogismoDetalheDTO.fromDomain(domain.getDetalhe()),
                 domain.getCriadoEm()
         );
     }
