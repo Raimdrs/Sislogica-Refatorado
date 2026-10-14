@@ -3,6 +3,7 @@ package com.sislogica.api.controller;
 import com.sislogica.api.domain.model.Quantificador;
 import com.sislogica.api.domain.model.Termo;
 import com.sislogica.api.dto.ProposicaoDTO;
+import com.sislogica.api.dto.SilogismoDetalheDTO;
 import com.sislogica.api.dto.SilogismoRequestDTO;
 import com.sislogica.api.dto.SilogismoResponseDTO;
 import com.sislogica.api.service.SilogismoService;
@@ -25,6 +26,7 @@ class SilogismoResourceUnitTest {
     private ProposicaoDTO premissaMaiorDTO;
     private ProposicaoDTO premissaMenorDTO;
     private ProposicaoDTO conclusaoDTO;
+    private SilogismoDetalheDTO detalheDTO;
 
     @BeforeEach
     void setUp() {
@@ -32,6 +34,7 @@ class SilogismoResourceUnitTest {
         premissaMaiorDTO = new ProposicaoDTO(Quantificador.A, Termo.M, Termo.T, "Todo M é T");
         premissaMenorDTO = new ProposicaoDTO(Quantificador.A, Termo.t, Termo.M, "Todo t é M");
         conclusaoDTO = new ProposicaoDTO(Quantificador.A, Termo.t, Termo.T, "Todo t é T");
+        detalheDTO = new SilogismoDetalheDTO("AAA-1", "Barbara", true, false, null);
 
         mockResponseDTO = new SilogismoResponseDTO(
                 1L,
@@ -39,9 +42,8 @@ class SilogismoResourceUnitTest {
                 premissaMaiorDTO,
                 premissaMenorDTO,
                 conclusaoDTO,
-                "BARBARA",
                 1L,
-                true,
+                detalheDTO,
                 Instant.now()
         );
     }
@@ -54,7 +56,6 @@ class SilogismoResourceUnitTest {
                 premissaMaiorDTO,
                 premissaMenorDTO,
                 conclusaoDTO,
-                "BARBARA",
                 1L
         );
 
@@ -82,7 +83,7 @@ class SilogismoResourceUnitTest {
             }
         };
 
-        Response response = resource.listarSilogismos(0, 10, "BARBARA");
+        Response response = resource.listarSilogismos(0, 10, "AAA-1");
 
         assertEquals(200, response.getStatus());
         assertEquals(List.of(mockResponseDTO), response.getEntity());
@@ -127,7 +128,6 @@ class SilogismoResourceUnitTest {
                 premissaMaiorDTO,
                 premissaMenorDTO,
                 conclusaoDTO,
-                "BARBARA",
                 1L
         );
 
@@ -152,7 +152,6 @@ class SilogismoResourceUnitTest {
                 premissaMaiorDTO,
                 premissaMenorDTO,
                 conclusaoDTO,
-                "BARBARA",
                 1L
         );
 

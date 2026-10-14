@@ -6,6 +6,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -30,14 +31,12 @@ public class SilogismoPanacheEntity extends PanacheEntity {
     @JoinColumn(name = "conclusao_id", nullable = false)
     public ProposicaoPanacheEntity conclusao;
 
-    @Column(name = "modo", nullable = false, length = 40)
-    public String modo;
-
     @Column(name = "turma_id", nullable = false)
     public Long turmaId;
 
-    @Column(name = "valido", nullable = false)
-    public boolean valido = true;
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "detalhe_id", unique = true)
+    public SilogismoDetalhePanacheEntity detalhe;
 
     @CreationTimestamp
     @Column(name = "criado_em", updatable = false)

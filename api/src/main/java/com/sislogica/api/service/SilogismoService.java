@@ -33,9 +33,8 @@ public class SilogismoService {
                 dto.premissaMaior != null ? dto.premissaMaior.toDomain() : null,
                 dto.premissaMenor != null ? dto.premissaMenor.toDomain() : null,
                 dto.conclusao != null ? dto.conclusao.toDomain() : null,
-                dto.modo,
                 dto.turmaId,
-                true,
+                null,
                 Instant.now()
         );
         Silogismo salvo = silogismoRepository.salvar(domain);
@@ -66,7 +65,6 @@ public class SilogismoService {
         domain.setPremissaMaior(dto.premissaMaior != null ? dto.premissaMaior.toDomain() : null);
         domain.setPremissaMenor(dto.premissaMenor != null ? dto.premissaMenor.toDomain() : null);
         domain.setConclusao(dto.conclusao != null ? dto.conclusao.toDomain() : null);
-        domain.setModo(dto.modo);
         domain.setTurmaId(dto.turmaId);
 
         Silogismo atualizado = silogismoRepository.salvar(domain);

@@ -23,10 +23,6 @@ public class SilogismoRequestDTO {
     @Valid
     public ProposicaoDTO conclusao;
 
-    @NotBlank(message = "O modo é obrigatório")
-    @Size(max = 40, message = "O modo deve ter no máximo 40 caracteres")
-    public String modo;
-
     @NotNull(message = "O ID da turma é obrigatório")
     public Long turmaId;
 
@@ -34,12 +30,11 @@ public class SilogismoRequestDTO {
     }
 
     public SilogismoRequestDTO(String titulo, ProposicaoDTO premissaMaior, ProposicaoDTO premissaMenor,
-                               ProposicaoDTO conclusao, String modo, Long turmaId) {
+                               ProposicaoDTO conclusao, Long turmaId) {
         this.titulo = titulo;
         this.premissaMaior = premissaMaior;
         this.premissaMenor = premissaMenor;
         this.conclusao = conclusao;
-        this.modo = modo;
         this.turmaId = turmaId;
     }
 }
