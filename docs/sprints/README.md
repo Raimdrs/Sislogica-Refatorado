@@ -7,10 +7,8 @@ Documentação de sprints e acompanhamento do projeto para a disciplina **DIM054
 ## Índice de Sprints
 
 - [Sprint 0 — Planejamento & Arquitetura Inicial](sprint-0.md)
-- *Sprint 1 — MVP Core: CRUD de Exercícios, Resolução de Tabelas-Verdade & Persistência*
-- *Sprint 2 — Microsserviço Go (gRPC AST Parser) & Validações Avançadas*
-- *Sprint 3 — Cache (Caffeine/Redis), Observabilidade & Hardening*
-- *Bloco Final — Autenticação JWT, Histórico do Aluno & Apresentação*
+- *Sprint 1 — MVP Core: CRUD de Turmas e Silogismos, Clean Architecture, Flyway & OpenAPI*
+- [Sprint 2 (Final) — Microsserviço Go, Contrato Protobuf/gRPC, Deploy, Testes & Documentação](sprint-2.md)
 
 ---
 
