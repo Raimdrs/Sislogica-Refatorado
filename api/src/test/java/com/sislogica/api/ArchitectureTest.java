@@ -8,9 +8,8 @@ import com.tngtech.archunit.lang.ArchRule;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
 
 /**
- * Teste de Arquitetura exigido na Sprint 1 (DIM0547).
- * Garante a regra fundamental da Clean Architecture:
- * Camadas internas (domínio) não podem depender de frameworks externos ou adaptadores de infraestrutura.
+ * Teste de Arquitetura (Clean Architecture / Ports & Adapters).
+ * Garante que o domínio permaneça 100% puro e isolado de frameworks, banco de dados, gRPC e camadas externas.
  */
 @AnalyzeClasses(packages = "com.sislogica.api", importOptions = ImportOption.DoNotIncludeTests.class)
 public class ArchitectureTest {
@@ -24,17 +23,33 @@ public class ArchitectureTest {
                 "jakarta.ws.rs..",
                 "org.hibernate..",
                 "java.sql..",
-                "javax.sql.."
+                "javax.sql..",
+                "io.grpc..",
+                "com.google.protobuf.."
             )
-            .because("O domínio deve ser 100% puro e agnóstico a frameworks e banco de dados.");
+            .because("O domínio deve ser 100% puro e agnóstico a frameworks, banco de dados e gRPC.");
 
     @ArchTest
     public static final ArchRule dominio_nao_deve_depender_de_camadas_externas =
         noClasses().that().resideInAPackage("..domain..")
             .should().dependOnClassesThat().resideInAnyPackage(
                 "..infrastructure..",
-                "..application.."
+                "..application..",
+                "..controller..",
+                "..service..",
+                "..dto.."
             )
-            .because("As regras de domínio não podem conhecer detalhes de aplicação ou infraestrutura.");
-}
+            .because("As regras de domínio não podem conhecer detalhes de aplicação, API ou infraestrutura.");
 
+    @ArchTest
+    public static final ArchRule servicos_nao_devem_depender_de_infraestrutura =
+        noClasses().that().resideInAPackage("..service..")
+            .should().dependOnClassesThat().resideInAPackage("..infrastructure..")
+            .because("A camada de serviço deve depender apenas das portas definidas no domínio.");
+
+    @ArchTest
+    public static final ArchRule dtos_nao_devem_depender_de_infraestrutura =
+        noClasses().that().resideInAPackage("..dto..")
+            .should().dependOnClassesThat().resideInAPackage("..infrastructure..")
+            .because("DTOs devem mapear a partir do domínio, nunca depender de entidades Panache/JPA.");
+}

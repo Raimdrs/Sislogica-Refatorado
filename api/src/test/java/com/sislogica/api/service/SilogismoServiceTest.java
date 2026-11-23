@@ -5,7 +5,9 @@ import com.sislogica.api.domain.model.Quantificador;
 import com.sislogica.api.domain.model.Silogismo;
 import com.sislogica.api.domain.model.SilogismoDetalhe;
 import com.sislogica.api.domain.model.Termo;
+import com.sislogica.api.domain.model.Turma;
 import com.sislogica.api.domain.repository.SilogismoRepositoryPort;
+import com.sislogica.api.domain.repository.TurmaRepositoryPort;
 import com.sislogica.api.dto.ProposicaoDTO;
 import com.sislogica.api.dto.SilogismoDetalheDTO;
 import com.sislogica.api.dto.SilogismoRequestDTO;
@@ -339,5 +341,75 @@ class SilogismoServiceTest {
 
         assertEquals(1, lista.size());
         assertEquals("Barbara Teste", lista.getFirst().titulo);
+    }
+
+    @Test
+    @DisplayName("Deve lançar IllegalArgumentException ao criar silogismo com turma inexistente")
+    void deveLancarExcecaoAoCriarSilogismoComTurmaInexistente() {
+        SilogismoRepositoryPort fakeSilogismoRepo = new SilogismoRepositoryPort() {
+            @Override
+            public Silogismo salvar(Silogismo s) {
+                return s;
+            }
+
+            @Override
+            public Optional<Silogismo> buscarPorId(Long id) {
+                return Optional.empty();
+            }
+
+            @Override
+            public List<Silogismo> listarPorTurma(Long turmaId, int pagina, int tamanho) {
+                return List.of();
+            }
+
+            @Override
+            public List<Silogismo> listar(int pagina, int tamanho, String modo) {
+                return List.of();
+            }
+
+            @Override
+            public boolean deletarPorId(Long id) {
+                return false;
+            }
+        };
+
+        TurmaRepositoryPort fakeTurmaRepo = new TurmaRepositoryPort() {
+            @Override
+            public Turma salvar(Turma turma) {
+                return turma;
+            }
+
+            @Override
+            public Optional<Turma> buscarPorId(Long id) {
+                return Optional.empty();
+            }
+
+            @Override
+            public Optional<Turma> buscarPorCodigo(String codigo) {
+                return Optional.empty();
+            }
+
+            @Override
+            public List<Turma> listar(int pagina, int tamanho, String professor) {
+                return List.of();
+            }
+
+            @Override
+            public boolean deletarPorId(Long id) {
+                return false;
+            }
+        };
+
+        service = new SilogismoService(fakeSilogismoRepo, fakeTurmaRepo);
+
+        SilogismoRequestDTO requestDTO = new SilogismoRequestDTO(
+                "Silogismo Sem Turma",
+                premissaMaiorDTO,
+                premissaMenorDTO,
+                conclusaoDTO,
+                999L
+        );
+
+        assertThrows(IllegalArgumentException.class, () -> service.criar(requestDTO));
     }
 }

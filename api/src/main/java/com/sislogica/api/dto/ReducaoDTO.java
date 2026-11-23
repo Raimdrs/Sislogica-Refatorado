@@ -1,7 +1,6 @@
 package com.sislogica.api.dto;
 
 import com.sislogica.api.domain.model.Reducao;
-import com.sislogica.api.infrastructure.entity.ReducaoPanacheEntity;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -48,19 +47,6 @@ public record ReducaoDTO(
                 ProposicaoDTO.fromDomain(domain.getProposicaoMaior()),
                 ProposicaoDTO.fromDomain(domain.getProposicaoMenor()),
                 ProposicaoDTO.fromDomain(domain.getConclusao())
-        );
-    }
-
-    public static ReducaoDTO fromEntity(ReducaoPanacheEntity entity) {
-        if (entity == null) {
-            return null;
-        }
-        return new ReducaoDTO(
-                entity.modo,
-                entity.nome,
-                ProposicaoDTO.fromEntity(entity.proposicaoMaior),
-                ProposicaoDTO.fromEntity(entity.proposicaoMenor),
-                ProposicaoDTO.fromEntity(entity.conclusao)
         );
     }
 }

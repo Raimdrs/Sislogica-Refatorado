@@ -2,7 +2,6 @@ package com.sislogica.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sislogica.api.domain.model.SilogismoDetalhe;
-import com.sislogica.api.infrastructure.entity.SilogismoDetalhePanacheEntity;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;
@@ -72,20 +71,6 @@ public record SilogismoDetalheDTO(
                 domain.getReduzivel(),
                 ReducaoDTO.fromDomain(domain.getReducao()),
                 domain.getErros()
-        );
-    }
-
-    public static SilogismoDetalheDTO fromEntity(SilogismoDetalhePanacheEntity entity) {
-        if (entity == null) {
-            return null;
-        }
-        return new SilogismoDetalheDTO(
-                entity.modo,
-                entity.nome,
-                entity.valido,
-                entity.reduzivel,
-                ReducaoDTO.fromEntity(entity.reducao),
-                entity.erros
         );
     }
 }

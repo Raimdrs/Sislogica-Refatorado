@@ -2,6 +2,7 @@ package com.sislogica.api.service;
 
 import com.sislogica.api.domain.model.Silogismo;
 import com.sislogica.api.domain.repository.SilogismoRepositoryPort;
+import com.sislogica.api.domain.repository.TurmaRepositoryPort;
 import com.sislogica.api.dto.SilogismoRequestDTO;
 import com.sislogica.api.dto.SilogismoResponseDTO;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -18,6 +19,9 @@ public class SilogismoService {
     @Inject
     public SilogismoRepositoryPort silogismoRepository;
 
+    @Inject
+    public TurmaRepositoryPort turmaRepository;
+
     public SilogismoService() {
     }
 
@@ -25,8 +29,15 @@ public class SilogismoService {
         this.silogismoRepository = silogismoRepository;
     }
 
+    public SilogismoService(SilogismoRepositoryPort silogismoRepository, TurmaRepositoryPort turmaRepository) {
+        this.silogismoRepository = silogismoRepository;
+        this.turmaRepository = turmaRepository;
+    }
+
     @Transactional
     public SilogismoResponseDTO criar(SilogismoRequestDTO dto) {
+        validarTurmaExistente(dto.turmaId);
+
         Silogismo domain = new Silogismo(
                 null,
                 dto.titulo,
@@ -60,6 +71,8 @@ public class SilogismoService {
             return Optional.empty();
         }
 
+        validarTurmaExistente(dto.turmaId);
+
         Silogismo domain = existente.get();
         domain.setTitulo(dto.titulo);
         domain.setPremissaMaior(dto.premissaMaior != null ? dto.premissaMaior.toDomain() : null);
@@ -69,6 +82,12 @@ public class SilogismoService {
 
         Silogismo atualizado = silogismoRepository.salvar(domain);
         return Optional.of(SilogismoResponseDTO.fromDomain(atualizado));
+    }
+
+    private void validarTurmaExistente(Long turmaId) {
+        if (turmaRepository != null && (turmaId == null || turmaRepository.buscarPorId(turmaId).isEmpty())) {
+            throw new IllegalArgumentException("Turma com ID " + turmaId + " não encontrada.");
+        }
     }
 
     @Transactional

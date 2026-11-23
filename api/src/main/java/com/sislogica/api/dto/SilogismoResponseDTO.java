@@ -1,7 +1,6 @@
 package com.sislogica.api.dto;
 
 import com.sislogica.api.domain.model.Silogismo;
-import com.sislogica.api.infrastructure.entity.SilogismoPanacheEntity;
 
 import java.time.Instant;
 
@@ -29,22 +28,6 @@ public class SilogismoResponseDTO {
         this.turmaId = turmaId;
         this.detalhe = detalhe;
         this.criadoEm = criadoEm;
-    }
-
-    public static SilogismoResponseDTO fromEntity(SilogismoPanacheEntity entity) {
-        if (entity == null) {
-            return null;
-        }
-        return new SilogismoResponseDTO(
-                entity.id,
-                entity.titulo,
-                ProposicaoDTO.fromEntity(entity.premissaMaior),
-                ProposicaoDTO.fromEntity(entity.premissaMenor),
-                ProposicaoDTO.fromEntity(entity.conclusao),
-                entity.turmaId,
-                SilogismoDetalheDTO.fromEntity(entity.detalhe),
-                entity.criadoEm
-        );
     }
 
     public static SilogismoResponseDTO fromDomain(Silogismo domain) {

@@ -5,6 +5,9 @@ import com.sislogica.api.dto.SilogismoResponseDTO;
 import com.sislogica.api.service.SilogismoService;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -43,8 +46,8 @@ public class SilogismoResource {
     @Operation(summary = "Listar silogismos", description = "Lista silogismos de forma paginada no banco com filtro opcional por modo")
     @APIResponse(responseCode = "200", description = "Lista de silogismos retornada com sucesso")
     public Response listarSilogismos(
-            @QueryParam("pagina") @DefaultValue("0") int pagina,
-            @QueryParam("tamanho") @DefaultValue("10") int tamanho,
+            @QueryParam("pagina") @PositiveOrZero(message = "A página deve ser maior ou igual a zero") @DefaultValue("0") int pagina,
+            @QueryParam("tamanho") @Min(value = 1, message = "O tamanho deve ser de no mínimo 1") @DefaultValue("10") int tamanho,
             @QueryParam("modo") String modo) {
         List<SilogismoResponseDTO> silogismos = silogismoService.listarPaginado(pagina, tamanho, modo);
         return Response.ok(silogismos).build();
@@ -57,7 +60,7 @@ public class SilogismoResource {
         @APIResponse(responseCode = "200", description = "Silogismo encontrado"),
         @APIResponse(responseCode = "404", description = "Silogismo não encontrado")
     })
-    public Response buscarSilogismoPorId(@PathParam("id") Long id) {
+    public Response buscarSilogismoPorId(@PathParam("id") @Positive(message = "O ID deve ser um número positivo") Long id) {
         return silogismoService.buscarPorId(id)
                 .map(dto -> Response.ok(dto).build())
                 .orElseGet(() -> Response.status(Response.Status.NOT_FOUND).build());
@@ -71,7 +74,7 @@ public class SilogismoResource {
         @APIResponse(responseCode = "400", description = "Dados de entrada inválidos"),
         @APIResponse(responseCode = "404", description = "Silogismo não encontrado")
     })
-    public Response atualizarSilogismo(@PathParam("id") Long id, @Valid SilogismoRequestDTO dto) {
+    public Response atualizarSilogismo(@PathParam("id") @Positive(message = "O ID deve ser um número positivo") Long id, @Valid SilogismoRequestDTO dto) {
         return silogismoService.atualizar(id, dto)
                 .map(atualizado -> Response.ok(atualizado).build())
                 .orElseGet(() -> Response.status(Response.Status.NOT_FOUND).build());
@@ -84,7 +87,7 @@ public class SilogismoResource {
         @APIResponse(responseCode = "204", description = "Silogismo removido com sucesso"),
         @APIResponse(responseCode = "404", description = "Silogismo não encontrado")
     })
-    public Response deletarSilogismo(@PathParam("id") Long id) {
+    public Response deletarSilogismo(@PathParam("id") @Positive(message = "O ID deve ser um número positivo") Long id) {
         boolean deletado = silogismoService.deletar(id);
         if (deletado) {
             return Response.noContent().build();
