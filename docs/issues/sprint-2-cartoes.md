@@ -1,11 +1,7 @@
 # Cartões da Sprint 2 — Sílógica (GitHub Issues / Projects)
 
-Enunciados adaptados ao monorepo **Sílógica** (`api/`, `services/parser/`, `protos/`, `docs/`) prontos para criar as **Issues** no repositório e vinculá-las ao quadro do **GitHub Projects**.
-
-> **Regra para pontuação de Atividade no Repositório:**  
-> 1. Cada cartão abaixo deve ser criado como **Issue** no repositório e adicionado ao GitHub Project da equipe.  
-> 2. Atribuir um responsável (**Assignee**) a cada Issue.  
-> 3. No Pull Request que resolve a tarefa, incluir `Closes #<numero-da-issue>` na descrição para fechar e vincular o cartão automaticamente no merge.
+> **Regra de Atividade no Repositório:**  
+> No Pull Request que resolve a tarefa, incluir `Closes #<numero-da-issue>` na descrição para fechar e vincular o cartão automaticamente no merge.
 
 ---
 
