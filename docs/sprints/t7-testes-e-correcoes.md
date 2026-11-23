@@ -61,6 +61,16 @@ public Long id;
   3. `servicos_nao_devem_depender_de_infraestrutura`: garante que `..service..` dependa apenas das portas do domínio.
   4. `dtos_nao_devem_depender_de_infraestrutura`: garante que `..dto..` nunca volte a importar entidades Panache/JPA.
 
+### Validação proposital do `ArchitectureTest` (prova contra falso positivo)
+Conforme exigido na T7, foi introduzida temporariamente a anotação proibida `@jakarta.persistence.Entity` na entidade pura `com.sislogica.api.domain.model.Turma` e executado `./mvnw test -Dtest=ArchitectureTest`. O teste falhou imediatamente (`Tests run: 4, Failures: 1`):
+
+```text
+Architecture Violation [Priority: MEDIUM] - Rule 'no classes that reside in a package '..domain..' should depend on classes that reside in any package ['io.quarkus..', 'jakarta.persistence..', 'jakarta.ws.rs..', 'org.hibernate..', 'java.sql..', 'javax.sql..', 'io.grpc..', 'com.google.protobuf..'], because O domínio deve ser 100% puro e agnóstico a frameworks, banco de dados e gRPC.' was violated (1 times):
+Class <com.sislogica.api.domain.model.Turma> is annotated with <jakarta.persistence.Entity> in (Turma.java:0)
+```
+
+Após a remoção da anotação temporária, o `ArchitectureTest` voltou a passar **4/4** (`BUILD SUCCESS`), confirmando que as regras estão efetivamente ativas.
+
 ---
 
 ## 4. Suíte Completa de Testes (T7 — 67 testes passando)
