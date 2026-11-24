@@ -98,7 +98,7 @@ grpcurl -plaintext -d '{"formula_a":"P -> Q","formula_b":"Q -> P"}' \
 ## 4. Próximo passo (T6 — integração no Quarkus)
 
 Na **T6**, a API Quarkus (`api/`) vai:
-1. Adicionar `quarkus-grpc` gerando stubs Java automaticamente no pacote `com.sislogica.parser.v1` a partir de `protos/sislogica/parser/v1/parser.proto`;
+1. Adicionar `quarkus-grpc` gerando stubs Java automaticamente no pacote `com.sislogica.api.parser.v1` a partir de `protos/sislogica/parser/v1/parser.proto`;
 2. Declarar uma porta pura no domínio da API e implementar o adaptador cliente gRPC na infraestrutura com prazo obrigatório (`withDeadlineAfter`);
 3. Tratar `UNAVAILABLE`, `DEADLINE_EXCEEDED` e `INVALID_ARGUMENT` com **degradação graciosa** (fallback local quando o serviço Go não estiver acessível);
-4. Adicionar `"com.sislogica.parser.v1.."` às regras proibidas no `ArchitectureTest.java`.
+4. Adicionar `"com.sislogica.api.parser.v1.."` às regras proibidas no `ArchitectureTest.java`.

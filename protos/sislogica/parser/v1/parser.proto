@@ -5,7 +5,7 @@ package sislogica.parser.v1;
 option go_package = "github.com/sislogica/services/parser/gen/sislogica/parser/v1;parserv1";
 option java_multiple_files = true;
 option java_outer_classname = "ParserProto";
-option java_package = "com.sislogica.parser.v1";
+option java_package = "com.sislogica.api.parser.v1";
 
 // LogicParserService fornece análise sintática formal (AST) e validação semântica
 // de equivalências entre fórmulas da lógica proposicional clássica.
