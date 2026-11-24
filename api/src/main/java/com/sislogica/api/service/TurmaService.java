@@ -4,6 +4,10 @@ import com.sislogica.api.domain.model.Turma;
 import com.sislogica.api.domain.repository.TurmaRepositoryPort;
 import com.sislogica.api.dto.TurmaRequestDTO;
 import com.sislogica.api.dto.TurmaResponseDTO;
+import io.quarkus.cache.CacheInvalidate;
+import io.quarkus.cache.CacheInvalidateAll;
+import io.quarkus.cache.CacheKey;
+import io.quarkus.cache.CacheResult;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -43,7 +47,8 @@ public class TurmaService {
         return TurmaResponseDTO.fromDomain(salva);
     }
 
-    public Optional<TurmaResponseDTO> buscarPorId(Long id) {
+    @CacheResult(cacheName = "turmas")
+    public Optional<TurmaResponseDTO> buscarPorId(@CacheKey Long id) {
         return turmaRepository.buscarPorId(id)
                 .map(TurmaResponseDTO::fromDomain);
     }
@@ -61,7 +66,8 @@ public class TurmaService {
     }
 
     @Transactional
-    public Optional<TurmaResponseDTO> atualizar(Long id, TurmaRequestDTO dto) {
+    @CacheInvalidate(cacheName = "turmas")
+    public Optional<TurmaResponseDTO> atualizar(@CacheKey Long id, TurmaRequestDTO dto) {
         Optional<Turma> existente = turmaRepository.buscarPorId(id);
         if (existente.isEmpty()) {
             return Optional.empty();
@@ -84,7 +90,9 @@ public class TurmaService {
     }
 
     @Transactional
-    public boolean deletar(Long id) {
+    @CacheInvalidate(cacheName = "turmas")
+    @CacheInvalidateAll(cacheName = "silogismos")
+    public boolean deletar(@CacheKey Long id) {
         return turmaRepository.deletarPorId(id);
     }
 }
