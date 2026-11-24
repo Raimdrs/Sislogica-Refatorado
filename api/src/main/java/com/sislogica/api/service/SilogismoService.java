@@ -5,6 +5,9 @@ import com.sislogica.api.domain.repository.SilogismoRepositoryPort;
 import com.sislogica.api.domain.repository.TurmaRepositoryPort;
 import com.sislogica.api.dto.SilogismoRequestDTO;
 import com.sislogica.api.dto.SilogismoResponseDTO;
+import io.quarkus.cache.CacheInvalidate;
+import io.quarkus.cache.CacheKey;
+import io.quarkus.cache.CacheResult;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -52,7 +55,8 @@ public class SilogismoService {
         return SilogismoResponseDTO.fromDomain(salvo);
     }
 
-    public Optional<SilogismoResponseDTO> buscarPorId(Long id) {
+    @CacheResult(cacheName = "silogismos")
+    public Optional<SilogismoResponseDTO> buscarPorId(@CacheKey Long id) {
         return silogismoRepository.buscarPorId(id)
                 .map(SilogismoResponseDTO::fromDomain);
     }
@@ -65,7 +69,8 @@ public class SilogismoService {
     }
 
     @Transactional
-    public Optional<SilogismoResponseDTO> atualizar(Long id, SilogismoRequestDTO dto) {
+    @CacheInvalidate(cacheName = "silogismos")
+    public Optional<SilogismoResponseDTO> atualizar(@CacheKey Long id, SilogismoRequestDTO dto) {
         Optional<Silogismo> existente = silogismoRepository.buscarPorId(id);
         if (existente.isEmpty()) {
             return Optional.empty();
@@ -91,7 +96,8 @@ public class SilogismoService {
     }
 
     @Transactional
-    public boolean deletar(Long id) {
+    @CacheInvalidate(cacheName = "silogismos")
+    public boolean deletar(@CacheKey Long id) {
         return silogismoRepository.deletarPorId(id);
     }
 
