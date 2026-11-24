@@ -3,7 +3,6 @@ package com.sislogica.api.dto;
 import com.sislogica.api.domain.model.Proposicao;
 import com.sislogica.api.domain.model.Quantificador;
 import com.sislogica.api.domain.model.Termo;
-import com.sislogica.api.infrastructure.entity.ProposicaoPanacheEntity;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -37,18 +36,6 @@ public record ProposicaoDTO(
                 domain.getSujeito(),
                 domain.getPredicado(),
                 domain.getTransliteracao()
-        );
-    }
-
-    public static ProposicaoDTO fromEntity(ProposicaoPanacheEntity entity) {
-        if (entity == null) {
-            return null;
-        }
-        return new ProposicaoDTO(
-                entity.quantificador,
-                entity.sujeito,
-                entity.predicado,
-                entity.transliteracao
         );
     }
 }
