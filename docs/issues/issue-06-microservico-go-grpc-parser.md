@@ -4,23 +4,22 @@
 Para processar fórmulas proposicionais complexas de forma escalável e com baixo uso de memória, criar um microsserviço dedicado em Go que realiza a análise léxica e sintática (parser) e expõe um contrato gRPC para o serviço Quarkus.
 
 ## Critérios de Aceite
-- [ ] Definição do arquivo `.proto` (ex: `formula_parser.proto`) contendo:
-  - Mensagem `ParseRequest { string formula = 1; }`
-  - Mensagem `ParseResponse { bool is_valid = 1; string error_message = 2; repeated string variables = 3; AstNode root = 4; }`
-  - Serviço `FormulaParserService`.
-- [ ] Microsserviço em Go que implementa o servidor gRPC e o parser formal de lógica proposicional.
-- [ ] Cliente gRPC no Quarkus utilizando `quarkus-grpc` para invocar o serviço Go em requisições de parsing avançado.
-- [ ] Tratamento de falhas de comunicação com fallback e circuit breaker / retry.
+- [x] Definição do arquivo `.proto` versionado (`protos/sislogica/parser/v1/parser.proto`) validado com `buf lint` (`STANDARD` e `COMMENTS`) contendo:
+  - Mensagens `ParseExpressionRequest` / `ParseExpressionResponse` (com `valid`, `variables` e `ast_json`) e `ValidateEquivalenceRequest` / `ValidateEquivalenceResponse`
+  - Serviço `LogicParserService` (`sislogica.parser.v1`).
+- [x] Microsserviço em Go que implementa o servidor gRPC, Health Check (`SERVING`), Reflection, `GracefulStop` e o parser formal + avaliador de equivalências no domínio puro.
+- [ ] Cliente gRPC no Quarkus utilizando `quarkus-grpc` para invocar o serviço Go em requisições de parsing avançado *(T6)*.
+- [ ] Tratamento de falhas de comunicação com fallback e deadline obrigatório *(T6)*.
 
 ## Tasks Técnicas
-- [ ] Modelar o schema protobuf e gerar stubs para Go e Java.
-- [ ] Implementar lexer e parser formal em Go (gramática LL(1) / Pratt parser ou Shunting-yard em Go).
-- [ ] Configurar servidor gRPC em Go com logs estruturados.
-- [ ] Integrar cliente gRPC no Quarkus no serviço `ParserClientService`.
+- [x] Modelar o schema protobuf versionado (`v1`), configurar `buf.yaml`/`buf.gen.yaml` e gerar stubs Go via `buf generate`.
+- [x] Implementar lexer e parser formal em Go (recursive-descent com `context.Context`, erros nomeados e AST).
+- [x] Configurar servidor gRPC em Go com logs estruturados (`slog`), Health Check, Reflection e `GracefulStop`.
+- [ ] Integrar cliente gRPC no Quarkus no serviço `ParserClientService` *(T6)*.
 
 ## Testes Exigidos
-- [ ] Testes unitários do parser em Go cobrindo fórmulas malformadas (ex: `P ^^ Q`, `(P -> Q`).
-- [ ] Testes de integração gRPC entre Quarkus e o serviço Go.
+- [x] Testes unitários do parser em Go cobrindo fórmulas malformadas (ex: `P ^^ Q`, `(P -> Q`), equivalências, contraexemplos, prazo/cancelamento (`context`) e pilha gRPC via `bufconn`.
+- [ ] Testes de integração gRPC entre Quarkus e o serviço Go *(T6)*.
 
 ## Labels / Estimativa
 `~microservice` `~golang` `~grpc` · Estimativa: 8 pts · Prioridade: **P3** · Sprint: **Sprint 2**
