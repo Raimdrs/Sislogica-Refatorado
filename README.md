@@ -132,6 +132,7 @@ mvn quarkus:dev
 - **API REST:** `http://localhost:8080`
 - **Swagger UI / OpenAPI interativo:** `http://localhost:8080/q/swagger-ui/`
 - **Healthcheck de liveness/readiness:** `http://localhost:8080/health`
+- **Métricas Prometheus:** `http://localhost:8080/q/metrics`
 
 #### B. Microsserviço de Parser (Go)
 Navegue até o diretório do serviço em Go para executá-lo diretamente:
@@ -169,8 +170,23 @@ Você pode testar cada serviço de forma isolada:
 
 ---
 
+## ✨ Funcionalidades e Endpoints da API
+
+| Módulo | Endpoints Principais | Descrição |
+|---|---|---|
+| **Saúde & Métricas** | `GET /health` · `GET /q/metrics` · `GET /q/swagger-ui/` | Healthcheck, métricas Micrometer/Prometheus (cache Caffeine) e OpenAPI |
+| **Turmas** | `POST/GET/PUT/DELETE /api/v1/turmas` · `GET /api/v1/turmas/{turmaId}/silogismos` | CRUD paginado de turmas com filtro por professor e rota aninhada `1:N` |
+| **Silogismos** | `POST/GET/PUT/DELETE /api/v1/silogismos` | CRUD paginado de silogismos aristotélicos (`A/E/I/O`, `T/t/M`) com filtro por modo |
+| **Equivalências Lógicas** | `POST /api/v1/equivalencia/validar` | Analisa duas fórmulas proposicionais (`formulaA`, `formulaB`), unifica variáveis, compara tabelas-verdade e retorna o primeiro contraexemplo em caso de divergência |
+
+Veja o guia completo com operadores aceitos, funcionamento interno e exemplos `curl` em [**docs/funcionalidades.md**](docs/funcionalidades.md).
+
+---
+
 ## 📖 Documentação da Proposta e Backlog
 
+- ⚙️ [Guia de Funcionalidades e Endpoints da API](docs/funcionalidades.md)
 - 📄 [Proposta do Projeto & Decisões Arquiteturais](docs/proposta.md)
 - 📋 [Backlog Inicial e Histórias de Usuário](docs/backlog.md)
+- 🗓️ [Planejamento da Sprint 2 e Cartões](docs/sprints/sprint-2.md)
 - 📌 [Quadro no GitHub Projects](https://github.com/users/Raimdrs/projects) *(Configuração no GitHub)*
