@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+package sislogica.parser.v1;
+
+option go_package = "github.com/sislogica/services/parser/gen/sislogica/parser/v1;parserv1";
+option java_multiple_files = true;
+option java_outer_classname = "ParserProto";
+option java_package = "com.sislogica.api.parser.v1";
+
+// LogicParserService fornece análise sintática formal (AST) e validação semântica
+// de equivalências entre fórmulas da lógica proposicional clássica.
+service LogicParserService {
+  // ParseExpression analisa sintaticamente uma fórmula proposicional e retorna suas variáveis e AST em JSON.
+  rpc ParseExpression(ParseExpressionRequest) returns (ParseExpressionResponse);
+
+  // ValidateEquivalence compara as tabelas-verdade de duas fórmulas proposicionais e retorna eventual contraexemplo.
+  rpc ValidateEquivalence(ValidateEquivalenceRequest) returns (ValidateEquivalenceResponse);
+}
+
+// ParseExpressionRequest transporta a fórmula proposicional a ser analisada sintaticamente.
+message ParseExpressionRequest {
+  // Expressão proposicional em notação ASCII ou Unicode (ex.: "(P & Q) -> R" ou "~(P ^ Q)").
+  string expression = 1;
+}
+
+// ParseExpressionResponse representa o resultado do parsing formal de uma fórmula proposicional.
+message ParseExpressionResponse {
+  // Indica se a fórmula é sintaticamente válida.
+  bool valid = 1;
+  // Lista ordenada das variáveis proposicionais distintas encontradas na fórmula.
+  repeated string variables = 2;
+  // Representação serializada em JSON da Árvore Sintática Abstrata (AST) gerada.
+  string ast_json = 3;
+}
+
+// ValidateEquivalenceRequest transporta o par de fórmulas proposicionais a serem comparadas semanticamente.
+message ValidateEquivalenceRequest {
+  // Primeira fórmula proposicional da comparação (A).
+  string formula_a = 1;
+  // Segunda fórmula proposicional da comparação (B).
+  string formula_b = 2;
+}
+
+// TruthTableRow representa uma linha da tabela-verdade comparativa entre duas fórmulas proposicionais.
+message TruthTableRow {
+  // Atribuição de valores-verdade para cada variável proposicional nesta linha.
+  map<string, bool> valuation = 1;
+  // Resultado booleano avaliado para a fórmula A sob esta valoração.
+  bool result_a = 2;
+  // Resultado booleano avaliado para a fórmula B sob esta valoração.
+  bool result_b = 3;
+  // Indica se os resultados de A e B coincidem nesta valoração.
+  bool equivalent = 4;
+}
+
+// ValidateEquivalenceResponse representa o resultado da verificação de equivalência lógica entre duas fórmulas.
+message ValidateEquivalenceResponse {
+  // Indica se as fórmulas A e B são semanticamente equivalentes em todas as valorações.
+  bool equivalent = 1;
+  // Conjunto unificado e ordenado das variáveis proposicionais presentes em A e B.
+  repeated string variables = 2;
+  // Primeira valoração em que A e B divergem (vazio quando equivalentes).
+  map<string, bool> counterexample = 3;
+  // Tabela-verdade completa comparando A e B sob todas as combinações das variáveis unificadas.
+  repeated TruthTableRow truth_table = 4;
+}
